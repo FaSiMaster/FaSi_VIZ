@@ -1,0 +1,16 @@
+/* Minimal CSS für Footer und «Verantwortliche Stellen»-Chips.
+   Tokens (Farben/Typografie) werden in der Applikation typischerweise zusätzlich via CSS-Variablen gespiegelt.
+*/
+
+.fasi-footer{padding:1.25rem 0;border-top:1px solid #CCCCCC;font-family:"Inter","Helvetica Now",Helvetica,Arial,sans-serif;}
+.fasi-footer h2{margin:0 0 0.75rem 0;font-size:1rem;font-weight:700;}
+.fasi-footer-menu ul,.fasi-footer-submenu ul{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:0.75rem;}
+.fasi-footer a{text-decoration:none;color:#00407C;}
+.fasi-footer a:hover{text-decoration:underline;}
+.fasi-footer-social{margin-top:0.75rem;display:flex;gap:0.75rem;}
+
+.fasi-responsible-stellen{margin:1rem 0;font-family:"Inter","Helvetica Now",Helvetica,Arial,sans-serif;}
+.fasi-responsible-stellen h2{margin:0 0 0.5rem 0;font-size:0.95rem;font-weight:700;}
+.fasi-chip-group{display:flex;flex-wrap:wrap;gap:0.5rem;}
+.fasi-chip{display:inline-flex;align-items:center;padding:0.35rem 0.6rem;border-radius:999px;border:1px solid #CCCCCC;background:#F7F7F7;color:#000000;font-size:0.9rem;text-decoration:none;}
+.fasi-chip:hover{border-color:#949494;}

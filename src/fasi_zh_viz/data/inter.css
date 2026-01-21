@@ -1,0 +1,6 @@
+/* Inter: Web-Anwendungen (Kanton Zürich) – font-feature-settings gemäss Vorgaben */
+:root{ --fasi-font-family: "Inter","Helvetica Now","Helvetica","Arial",sans-serif; }
+.fasi-font-inter{
+  font-family: var(--fasi-font-family);
+  font-feature-settings: "ss07" 1, "ss08" 1, "cv03" 1, "cv04" 1, "cv10" 1;
+}
