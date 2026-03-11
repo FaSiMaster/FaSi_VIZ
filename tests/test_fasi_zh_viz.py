@@ -24,7 +24,7 @@ class TestTokens:
 
     def test_tokens_version(self):
         tokens = load_tokens()
-        assert tokens["meta"]["version"] == "2.2.0"
+        assert tokens["meta"]["version"] == "2.3.0"
 
     def test_infographics_palette_exists(self):
         tokens = load_tokens()
@@ -334,3 +334,72 @@ class TestCDManualColors:
         tokens = load_tokens()
         assert "typography_print" in tokens
         assert "publikationen" in tokens["typography_print"]
+
+
+class TestFarbenV23:
+    """Tests fuer Farbkorrekturen und neue Token-Sektionen (v2.3)"""
+
+    def test_blau_korrekter_wert(self):
+        """accent.blau muss #0076BD sein (leu + CD Manual bestaetigt)."""
+        tokens = load_tokens()
+        assert tokens["colors"]["accent"]["blau"] == "#0076BD", \
+            "blau war #0070B4 (falsch) - korrekter Wert: #0076BD"
+
+    def test_infografik_blau_korrekter_wert(self):
+        tokens = load_tokens()
+        assert tokens["colors"]["infographics_palette"]["blau"] == "#0076BD"
+
+    def test_blau_kontrast_auf_weiss(self):
+        """#0076BD muss Mindestkontrast 3:1 auf Weiss haben."""
+        ratio = contrast_ratio("#0076BD", "#FFFFFF")
+        assert ratio >= 3.0, f"Kontrast #0076BD auf Weiss: {ratio:.2f} < 3.0"
+
+    def test_breakpoints_vorhanden(self):
+        tokens = load_tokens()
+        bp = tokens["breakpoints"]
+        assert bp["small"] == 400
+        assert bp["regular"] == 600
+        assert bp["medium"] == 840
+        assert bp["large"] == 1024
+        assert bp["xlarge"] == 1280
+
+    def test_shadows_vorhanden(self):
+        tokens = load_tokens()
+        sh = tokens["shadows"]
+        assert "short" in sh
+        assert "regular" in sh
+        assert "long" in sh
+
+    def test_grid_vorhanden(self):
+        tokens = load_tokens()
+        grid = tokens["grid"]
+        assert grid["columns"] == 12
+        assert grid["max_width_rem"] == 73
+
+    def test_typography_scale_vorhanden(self):
+        tokens = load_tokens()
+        scale = tokens["typography"]["scale"]
+        assert "tiny" in scale
+        assert "giant" in scale
+        assert scale["tiny"]["size_px"] == 12
+        assert scale["giant"]["size_px"] == 72
+
+    def test_typography_scale_vollstaendig(self):
+        """Alle 18 Skalenstufen muessen vorhanden sein."""
+        tokens = load_tokens()
+        scale = {k: v for k, v in tokens["typography"]["scale"].items()
+                 if not k.startswith("_")}
+        assert len(scale) == 18
+
+    def test_font_family_regular_und_black_getrennt(self):
+        tokens = load_tokens()
+        assert "font_family_regular" in tokens["typography"]
+        assert "font_family_black" in tokens["typography"]
+        assert tokens["typography"]["font_family_regular"][0] == "InterRegular"
+        assert tokens["typography"]["font_family_black"][0] == "InterBlack"
+
+    def test_responsive_curves_vorhanden(self):
+        tokens = load_tokens()
+        curves = tokens["typography"]["responsive_curves"]
+        assert "tiny_curve" in curves
+        assert "huge_curve" in curves
