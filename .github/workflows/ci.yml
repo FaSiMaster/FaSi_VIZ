@@ -27,28 +27,43 @@ jobs:
           pip install -e ".[dev]"
 
       - name: Lint with ruff
-        run: |
-          ruff check src/
+        run: ruff check src/
 
       - name: Type check with mypy
-        run: |
-          mypy src/fasi_zh_viz/ --ignore-missing-imports
+        run: mypy src/fasi_zh_viz/ --ignore-missing-imports
 
       - name: Test with pytest
-        run: |
-          pytest tests/ -v --cov=fasi_zh_viz --cov-report=xml
+        run: pytest tests/ -v --cov=fasi_zh_viz --cov-report=xml --cov-report=term-missing
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        if: matrix.python-version == '3.11'
+        uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
           fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install bandit
+        run: pip install bandit
+
+      - name: Security scan with bandit
+        run: bandit -r src/fasi_zh_viz/ -ll
 
   publish:
-    needs: test
+    needs: [test, security]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    
+
     steps:
       - uses: actions/checkout@v4
 

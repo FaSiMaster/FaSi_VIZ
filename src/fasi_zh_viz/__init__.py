@@ -17,7 +17,7 @@ Verwendung:
     print(build_source_line("Statistisches Amt", "21.01.2026"))
 """
 
-__version__ = "2.3.0"
+__version__ = "2.4.0"
 
 # Tokens & CSS
 from .tokens import load_tokens, load_css
@@ -82,6 +82,20 @@ from .sprache import (
     SprachIssue,
 )
 
+# FaSi-eigene Farbthemen (Verkehrssicherheit)
+from .fasi_themes import (
+    get_theme_palette,
+    get_theme_colors,
+    get_theme_labels,
+    list_themes,
+    get_unfallschwere_color,
+    UNFALLSCHWERE_PALETTE,
+    UNFALLTYP_PALETTE,
+    TREND_PALETTE,
+    VERKEHRSTEILNEHMER_PALETTE,
+    STRASSENTYP_PALETTE,
+)
+
 __all__ = [
     # Version
     "__version__",
@@ -137,4 +151,15 @@ __all__ = [
     "neutrale_form",
     "lint_geschlechtergerecht",
     "SprachIssue",
+    # FaSi-Farbthemen
+    "get_theme_palette",
+    "get_theme_colors",
+    "get_theme_labels",
+    "list_themes",
+    "get_unfallschwere_color",
+    "UNFALLSCHWERE_PALETTE",
+    "UNFALLTYP_PALETTE",
+    "TREND_PALETTE",
+    "VERKEHRSTEILNEHMER_PALETTE",
+    "STRASSENTYP_PALETTE",
 ]

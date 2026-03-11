@@ -403,3 +403,203 @@ class TestFarbenV23:
         curves = tokens["typography"]["responsive_curves"]
         assert "tiny_curve" in curves
         assert "huge_curve" in curves
+
+
+class TestVersionSync:
+    """Version muss in __init__.py und pyproject.toml übereinstimmen."""
+
+    def test_version_konsistent(self):
+        import fasi_zh_viz
+        import importlib.metadata
+        pkg_version = importlib.metadata.version("fasi-zh-viz")
+        assert fasi_zh_viz.__version__ == pkg_version, (
+            f"__init__.py hat {fasi_zh_viz.__version__}, "
+            f"pyproject.toml hat {pkg_version}"
+        )
+
+
+class TestUngueltigeEingaben:
+    """Robustheit bei ungültigen Eingaben."""
+
+    def test_contrast_ungueltige_hex(self):
+        import pytest
+        from fasi_zh_viz import contrast_ratio
+        with pytest.raises(ValueError):
+            contrast_ratio("rot", "#FFFFFF")
+
+    def test_contrast_zu_kurz(self):
+        import pytest
+        from fasi_zh_viz import contrast_ratio
+        with pytest.raises(ValueError):
+            contrast_ratio("#FFF", "#000000")
+
+    def test_luminance_ungueltige_hex(self):
+        import pytest
+        from fasi_zh_viz import relative_luminance
+        with pytest.raises(ValueError):
+            relative_luminance("#GGGGGG")
+
+
+class TestValidatorenErweitert:
+    """Tests für bisher nicht abgedeckte Validatoren."""
+
+    def test_validate_background_allowed_ok(self):
+        from fasi_zh_viz import validate_background_allowed
+        result = validate_background_allowed(
+            "#FFFFFF", allowed=["#FFFFFF", "#F5F5F5"]
+        )
+        assert result["ok"] is True
+
+    def test_validate_background_allowed_fail(self):
+        from fasi_zh_viz import validate_background_allowed
+        result = validate_background_allowed(
+            "#FF0000", allowed=["#FFFFFF", "#F5F5F5"]
+        )
+        assert result["ok"] is False
+
+    def test_validate_background_inverted(self):
+        from fasi_zh_viz import validate_background_allowed
+        result = validate_background_allowed(
+            "#000000",
+            allowed=["#FFFFFF"],
+            allowed_inverted=["#000000"],
+            inverted=True,
+        )
+        assert result["ok"] is True
+
+    def test_validate_palette_names_ok(self):
+        from fasi_zh_viz import validate_palette_names_for_background
+        result = validate_palette_names_for_background(
+            palette_names=["blau", "gruen"],
+            background="#FFFFFF",
+            palette_by_background={"#FFFFFF": ["blau", "gruen", "rot"]},
+        )
+        assert result["ok"] is True
+
+    def test_validate_palette_names_fail(self):
+        from fasi_zh_viz import validate_palette_names_for_background
+        result = validate_palette_names_for_background(
+            palette_names=["blau", "hellgelb"],
+            background="#FFFFFF",
+            palette_by_background={"#FFFFFF": ["blau", "gruen"]},
+        )
+        assert result["ok"] is False
+        assert "hellgelb" in result["disallowed"]
+
+    def test_warn_palette_not_diverse(self):
+        from fasi_zh_viz import warn_if_palette_not_diverse_groups
+        result = warn_if_palette_not_diverse_groups(
+            palette_names=["blau", "hellblau"],
+            palette_groups={"blau_gruppe": ["blau", "hellblau"], "rot_gruppe": ["rot"]},
+            min_distinct_groups=2,
+        )
+        assert result["ok"] is False
+
+    def test_warn_legend_outside(self):
+        from fasi_zh_viz import warn_if_legend_not_outside
+        assert warn_if_legend_not_outside(True)["ok"] is True
+        assert warn_if_legend_not_outside(False)["ok"] is False
+
+
+class TestUIKomponenten:
+    """Tests für HTML-UI-Komponenten (XSS-Schutz)."""
+
+    def test_responsible_html_normaler_input(self):
+        from fasi_zh_viz.ui.responsible import verantwortliche_stellen_html
+        html = verantwortliche_stellen_html([
+            ("Statistisches Amt", "https://www.zh.ch/statistik")
+        ])
+        assert "Statistisches Amt" in html
+        assert "https://www.zh.ch/statistik" in html
+        assert "fasi-chip" in html
+
+    def test_responsible_html_xss_url(self):
+        """javascript:-URLs müssen abgelehnt werden."""
+        import pytest
+        from fasi_zh_viz.ui.responsible import verantwortliche_stellen_html
+        with pytest.raises(ValueError):
+            verantwortliche_stellen_html([("Test", "javascript:alert(1)")])
+
+    def test_responsible_html_xss_label(self):
+        """HTML in Labels muss escaped werden."""
+        from fasi_zh_viz.ui.responsible import verantwortliche_stellen_html
+        html_out = verantwortliche_stellen_html([
+            ("<script>alert(1)</script>", "https://example.com")
+        ])
+        assert "<script>" not in html_out
+        assert "&lt;script&gt;" in html_out
+
+    def test_footer_website(self):
+        from fasi_zh_viz.ui.footer import footer_html
+        html = footer_html("website")
+        assert "fasi-footer" in html
+        assert "Kanton Zürich" in html
+        assert "Copyright" in html
+
+    def test_footer_unbekannter_kind(self):
+        import pytest
+        from fasi_zh_viz.ui.footer import footer_html
+        with pytest.raises(ValueError):
+            footer_html("unbekannt")
+
+
+class TestFaSiThemes:
+    """Tests für FaSi-eigene Farbthemen (Verkehrssicherheit)."""
+
+    def test_alle_themes_vorhanden(self):
+        from fasi_zh_viz import list_themes
+        themes = list_themes()
+        assert "unfallschwere" in themes
+        assert "unfalltyp" in themes
+        assert "trend" in themes
+        assert "verkehrsteilnehmer" in themes
+        assert "strassentyp" in themes
+
+    def test_unfallschwere_drei_stufen(self):
+        from fasi_zh_viz import get_theme_palette
+        palette = get_theme_palette("unfallschwere")
+        assert "leichtverletzte" in palette
+        assert "schwerverletzte" in palette
+        assert "getötete" in palette
+
+    def test_theme_farben_gueltige_hex(self):
+        """Alle Theme-Farben müssen gültige Hex-Werte sein."""
+        from fasi_zh_viz import list_themes, get_theme_palette, contrast_ratio
+        for theme in list_themes():
+            for label, color in get_theme_palette(theme).items():
+                # contrast_ratio wirft ValueError bei ungültigen Hex-Werten
+                ratio = contrast_ratio(color, "#FFFFFF")
+                assert ratio >= 1.0, f"{theme}/{label}: {color} ist keine gültige Farbe"
+
+    def test_unfallschwere_farben_gueltig(self):
+        """Alle Unfallschwere-Farben müssen gültige Hex-Werte sein.
+        Hinweis: Füllfarben in Charts müssen kein 3:1 Textkontrast erfüllen —
+        die Bedeutung wird durch Label + Form getragen, nicht nur durch Farbe.
+        """
+        from fasi_zh_viz import get_theme_palette, contrast_ratio
+        for label, color in get_theme_palette("unfallschwere").items():
+            ratio = contrast_ratio(color, "#FFFFFF")
+            assert ratio >= 1.0, f"{label} ({color}): ungültige Farbe"
+
+    def test_theme_colors_list(self):
+        from fasi_zh_viz import get_theme_colors
+        colors = get_theme_colors("trend")
+        assert isinstance(colors, list)
+        assert len(colors) == 4
+
+    def test_theme_labels_list(self):
+        from fasi_zh_viz import get_theme_labels
+        labels = get_theme_labels("verkehrsteilnehmer")
+        assert "fussgänger" in labels
+        assert "velo" in labels
+
+    def test_get_unfallschwere_color(self):
+        from fasi_zh_viz import get_unfallschwere_color
+        assert get_unfallschwere_color("getötete") == "#B31523"
+        assert get_unfallschwere_color("unbekannt") is None
+
+    def test_unbekanntes_theme_raises(self):
+        import pytest
+        from fasi_zh_viz import get_theme_palette
+        with pytest.raises(ValueError):
+            get_theme_palette("nichtvorhanden")
