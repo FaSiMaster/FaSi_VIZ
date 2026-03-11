@@ -24,7 +24,7 @@ class TestTokens:
 
     def test_tokens_version(self):
         tokens = load_tokens()
-        assert tokens["meta"]["version"] == "2.0.0"
+        assert tokens["meta"]["version"] == "2.2.0"
 
     def test_infographics_palette_exists(self):
         tokens = load_tokens()
@@ -190,7 +190,7 @@ class TestTextFormat:
 
     def test_lint_swiss_de_quotes(self):
         from fasi_zh_viz import lint_swiss_de_text
-        result = lint_swiss_de_text("Er sagte „Hallo"")
+        result = lint_swiss_de_text("Er sagte \u201eHallo\u201c")
         assert len(result["issues"]) > 0  # Warnung wegen deutscher Anführungszeichen
 
 
@@ -232,3 +232,105 @@ class TestAnnotations:
         long_text = "x" * 200
         result = validate_alt_text(long_text, max_chars=150)
         assert len(result["issues"]) > 0  # Warnung wegen Länge
+
+
+class TestImpressum:
+    """Tests für Impressum-Modul (NEU in v2.2)"""
+
+    def test_fasi_kontakt_vorhanden(self):
+        from fasi_zh_viz.impressum import FASI
+        assert FASI.vorname == "Stevan"
+        assert FASI.nachname == "Skeledžić"
+        assert FASI.email == "stevan.skeledzic@bd.zh.ch"
+
+    def test_email_signatur_plain(self):
+        from fasi_zh_viz.impressum import build_email_signatur, FASI
+        sig = build_email_signatur(FASI)
+        assert "Freundliche Grüsse" in sig
+        assert "Stevan Skeledžić" in sig
+        assert "Kanton Zürich" in sig
+        assert "Baudirektion" in sig
+        assert "stevan.skeledzic@bd.zh.ch" in sig
+        assert "+41 43 259 31 20" in sig
+
+    def test_email_signatur_html(self):
+        from fasi_zh_viz.impressum import build_email_signatur, FASI
+        sig = build_email_signatur(FASI, plain_text=False)
+        assert "<strong>" in sig
+        assert "Baudirektion" in sig
+
+    def test_org_einheit_stempelversion(self):
+        from fasi_zh_viz.impressum import FASI_ORG
+        zeilen = FASI_ORG.as_stempelversion()
+        assert len(zeilen) == 3
+        assert zeilen[0] == "Kanton Zürich"
+        assert zeilen[1] == "Baudirektion"
+
+    def test_org_einheit_burostempel(self):
+        from fasi_zh_viz.impressum import FASI_ORG
+        zeilen = FASI_ORG.as_burostempel()
+        assert len(zeilen) >= 3
+        assert "Kanton Zürich" in zeilen
+
+
+class TestSprache:
+    """Tests für geschlechtergerechte Sprache (NEU in v2.2)"""
+
+    def test_paarform_bekannt(self):
+        from fasi_zh_viz.sprache import paarform
+        result = paarform("Mitarbeiter")
+        assert "Mitarbeiterinnen" in result
+        assert "Mitarbeiter" in result
+
+    def test_sparschreibung(self):
+        from fasi_zh_viz.sprache import sparschreibung
+        result = sparschreibung("Mitarbeiter")
+        assert result == "Mitarbeiter/-innen"
+
+    def test_lint_genderstern_verboten(self):
+        from fasi_zh_viz.sprache import lint_geschlechtergerecht
+        result = lint_geschlechtergerecht("Die Mitarbeiter*innen sind eingeladen.")
+        assert result["ok"] is False
+        assert len(result["issues"]) > 0
+
+    def test_lint_doppelpunkt_verboten(self):
+        from fasi_zh_viz.sprache import lint_geschlechtergerecht
+        result = lint_geschlechtergerecht("Die Mitarbeiter:innen sind eingeladen.")
+        assert result["ok"] is False
+
+    def test_lint_paarform_ok(self):
+        from fasi_zh_viz.sprache import lint_geschlechtergerecht
+        result = lint_geschlechtergerecht("Die Mitarbeiterinnen und Mitarbeiter sind eingeladen.")
+        assert result["ok"] is True
+
+    def test_neutrale_form(self):
+        from fasi_zh_viz.sprache import neutrale_form
+        result = neutrale_form("Mitarbeiter")
+        assert result == "Mitarbeitende"
+
+
+class TestCDManualColors:
+    """Tests für CD Manual Farben (NEU in v2.2)"""
+
+    def test_cd_manual_colors_vorhanden(self):
+        tokens = load_tokens()
+        assert "cd_manual_colors" in tokens
+        assert "cyan_zh" in tokens["cd_manual_colors"]
+        assert "gelb_zh" in tokens["cd_manual_colors"]  # war bisher fehlend
+
+    def test_cd_manual_10_farben(self):
+        tokens = load_tokens()
+        cd_colors = {k: v for k, v in tokens["cd_manual_colors"].items() if not k.startswith("_")}
+        assert len(cd_colors) == 10
+
+    def test_typography_office_vorhanden(self):
+        tokens = load_tokens()
+        assert "typography_office" in tokens
+        assert "brief_dokument" in tokens["typography_office"]
+        assert "email_signatur" in tokens["typography_office"]
+        assert "powerpoint" in tokens["typography_office"]
+
+    def test_typography_print_vorhanden(self):
+        tokens = load_tokens()
+        assert "typography_print" in tokens
+        assert "publikationen" in tokens["typography_print"]

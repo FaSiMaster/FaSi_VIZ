@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "fasi-zh-viz"
-version = "2.1.0"
+version = "2.2.0"
 description = "Visualisierungs-Library gemäss Kanton Zürich Designsystem"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -54,10 +54,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/kanton-zuerich/fasi-zh-viz"
-Documentation = "https://github.com/kanton-zuerich/fasi-zh-viz#readme"
-Repository = "https://github.com/kanton-zuerich/fasi-zh-viz.git"
-Issues = "https://github.com/kanton-zuerich/fasi-zh-viz/issues"
+Homepage = "https://github.com/FaSiMaster/FaSi_VIZ"
+Documentation = "https://github.com/FaSiMaster/FaSi_VIZ#readme"
+Repository = "https://github.com/FaSiMaster/FaSi_VIZ.git"
+Issues = "https://github.com/FaSiMaster/FaSi_VIZ/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/fasi_zh_viz"]

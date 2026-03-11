@@ -1,7 +1,7 @@
 from typing import Dict, Any
 
 def altair_theme(tokens: Dict[str, Any], base_font_px: float = 12.0) -> Dict[str, Any]:
-    font = "Inter"
+    font = tokens["typography"]["web_default_font_family"][0]
     bg = tokens["infographics_rules"]["background_default"]
     black = tokens["colors"]["grays"]["black100"]
     gray60 = tokens["colors"]["grays"]["black60"]

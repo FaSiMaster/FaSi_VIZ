@@ -1,23 +1,23 @@
 """
 FaSi ZH Viz - Visualisierungs-Library gemäss Kanton Zürich Designsystem
 
-Version: 2.1.0
+Version: 2.2.0
 
 Verwendung:
     from fasi_zh_viz import load_tokens, apply_matplotlib_style
     from fasi_zh_viz import format_int_ch, format_date_ch, build_source_line
-    
+
     tokens = load_tokens()
     apply_matplotlib_style(tokens)
-    
+
     # Schweizer Formatierung
     print(format_int_ch(1234567))  # "1'234'567"
-    
+
     # Quellenangabe
     print(build_source_line("Statistisches Amt", "21.01.2026"))
 """
 
-__version__ = "2.1.0"
+__version__ = "2.2.0"
 
 # Tokens & CSS
 from .tokens import load_tokens, load_css
@@ -32,6 +32,10 @@ from .validators import (
     validate_min_font_px,
     warn_if_too_many_categories,
     ValidationIssue,
+    validate_background_allowed,
+    validate_palette_names_for_background,
+    warn_if_palette_not_diverse_groups,
+    warn_if_legend_not_outside,
 )
 
 # Library-Themes
@@ -60,6 +64,24 @@ from .annotations import (
     AnnotationIssue,
 )
 
+# Impressum & Signatur
+from .impressum import (
+    KontaktPerson,
+    OrgEinheit,
+    build_email_signatur,
+    FASI,
+    FASI_ORG,
+)
+
+# Geschlechtergerechte Sprache
+from .sprache import (
+    paarform,
+    sparschreibung,
+    neutrale_form,
+    lint_geschlechtergerecht,
+    SprachIssue,
+)
+
 __all__ = [
     # Version
     "__version__",
@@ -75,6 +97,10 @@ __all__ = [
     "validate_min_font_px",
     "warn_if_too_many_categories",
     "ValidationIssue",
+    "validate_background_allowed",
+    "validate_palette_names_for_background",
+    "warn_if_palette_not_diverse_groups",
+    "warn_if_legend_not_outside",
     # Matplotlib
     "apply_matplotlib_style",
     "matplotlib_rcparams",
@@ -99,4 +125,16 @@ __all__ = [
     "build_caption",
     "validate_alt_text",
     "AnnotationIssue",
+    # Impressum & Signatur
+    "KontaktPerson",
+    "OrgEinheit",
+    "build_email_signatur",
+    "FASI",
+    "FASI_ORG",
+    # Geschlechtergerechte Sprache
+    "paarform",
+    "sparschreibung",
+    "neutrale_form",
+    "lint_geschlechtergerecht",
+    "SprachIssue",
 ]

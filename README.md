@@ -2,7 +2,7 @@
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://github.com/kanton-zuerich/fasi-zh-viz/actions/workflows/ci.yml/badge.svg)](https://github.com/kanton-zuerich/fasi-zh-viz/actions)
+[![CI](https://github.com/FaSiMaster/FaSi_VIZ/actions/workflows/ci.yml/badge.svg)](https://github.com/FaSiMaster/FaSi_VIZ/actions)
 
 **Visualisierungs-Library gemäss Kanton Zürich Designsystem**
 
@@ -17,7 +17,7 @@ pip install fasi-zh-viz
 Oder direkt von GitHub:
 
 ```bash
-pip install git+https://github.com/kanton-zuerich/fasi-zh-viz.git
+pip install git+https://github.com/FaSiMaster/FaSi_VIZ.git
 ```
 
 ## Schnellstart
@@ -123,8 +123,8 @@ Die Vorgaben stammen aus dem offiziellen Designsystem:
 
 ```bash
 # Repository klonen
-git clone https://github.com/kanton-zuerich/fasi-zh-viz.git
-cd fasi-zh-viz
+git clone https://github.com/FaSiMaster/FaSi_VIZ.git
+cd FaSi_VIZ
 
 # Entwicklungsumgebung
 pip install -e ".[dev]"
