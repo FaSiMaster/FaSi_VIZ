@@ -6,8 +6,8 @@ Vielen Dank für dein Interesse, zu diesem Projekt beizutragen!
 
 ```bash
 # Repository klonen
-git clone https://github.com/kanton-zuerich/fasi-zh-viz.git
-cd fasi-zh-viz
+git clone https://github.com/FaSiMaster/FaSi_VIZ.git
+cd FaSi_VIZ
 
 # Virtual Environment erstellen
 python -m venv .venv
