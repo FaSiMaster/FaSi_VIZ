@@ -59,6 +59,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# Local settings (may contain secrets)
+settings.local.json
+settings_local.json
+
 # IDE
 .idea/
 .vscode/
