@@ -1,0 +1,19 @@
+{
+  "_hinweis": "Kontaktdaten hier anpassen, nicht im Package-Code",
+  "fasi": {
+    "vorname": "Stevan",
+    "nachname": "Skeledžić",
+    "titel": "Leiter Verkehrssicherheit / SiBe ZH",
+    "email": "stevan.skeledzic@bd.zh.ch",
+    "telefon": "+41 43 259 31 20",
+    "website": "www.zh.ch/verkehrssicherheit"
+  },
+  "fasi_org": {
+    "kanton": "Kanton Zürich",
+    "direktion": "Baudirektion",
+    "amt": "Tiefbauamt",
+    "abteilung": "Fachstelle Verkehrssicherheit FaSi",
+    "adresse": "Walcheplatz 2",
+    "plz_ort": "8090 Zürich"
+  }
+}

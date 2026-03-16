@@ -1,0 +1,19 @@
+{
+  "_hinweis": "Dieses Template als Vorlage verwenden. Werte anpassen und als kontakte.json speichern.",
+  "fasi": {
+    "vorname": "Vorname",
+    "nachname": "Nachname",
+    "titel": "Funktion / Titel",
+    "email": "vorname.nachname@bd.zh.ch",
+    "telefon": "+41 43 259 XX XX",
+    "website": "www.zh.ch/ihre-seite"
+  },
+  "fasi_org": {
+    "kanton": "Kanton Zürich",
+    "direktion": "Baudirektion",
+    "amt": "Tiefbauamt",
+    "abteilung": "Fachstelle Verkehrssicherheit FaSi",
+    "adresse": "Walcheplatz 2",
+    "plz_ort": "8090 Zürich"
+  }
+}

@@ -3,12 +3,25 @@
 Basiert auf dem Corporate Design Manual Kanton Zürich, Version 2025.
 E-Mail-Signatur: S. 23 des CD Manual.
 Schrift E-Mail: Arial Regular/Black, 10 pt.
+
+Kontaktdaten werden aus data/kontakte.json geladen.
+Zum Anpassen: kontakte.json editieren (kein Package-Rebuild nötig).
 """
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
+
+
+def _load_kontakte() -> dict:
+    """Lädt Kontaktdaten aus data/kontakte.json."""
+    data_dir = Path(__file__).parent / "data"
+    kontakte_path = data_dir / "kontakte.json"
+    with open(kontakte_path, encoding="utf-8") as f:
+        return json.load(f)
 
 
 @dataclass(frozen=True)
@@ -138,27 +151,41 @@ def _build_html(person: KontaktPerson, grussformel: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Vordefinierte Kontakte
+# Vordefinierte Kontakte – aus kontakte.json geladen
 # ---------------------------------------------------------------------------
 
-FASI = KontaktPerson(
-    vorname="Stevan",
-    nachname="Skeledžić",
-    funktion="Leiter Verkehrssicherheit / SiBe ZH",
-    direktion="Baudirektion",
-    amt="Fachstelle Verkehrssicherheit FaSi",
-    abteilung="Tiefbauamt",
-    team="Strasseninspektorat",
-    strasse="Walcheplatz 2",
-    plz_ort="8090 Zürich",
-    telefon="+41 43 259 31 20",
-    email="stevan.skeledzic@bd.zh.ch",
-    website="www.zh.ch/verkehrssicherheit",
-)
+def _build_fasi() -> KontaktPerson:
+    """Baut FASI-Kontakt aus kontakte.json."""
+    k = _load_kontakte()
+    p = k["fasi"]
+    org = k["fasi_org"]
+    return KontaktPerson(
+        vorname=p["vorname"],
+        nachname=p["nachname"],
+        funktion=p["titel"],
+        direktion=org["direktion"],
+        amt=org["abteilung"],
+        abteilung=org["amt"],
+        team=None,
+        strasse=org["adresse"],
+        plz_ort=org["plz_ort"],
+        telefon=p["telefon"],
+        email=p["email"],
+        website=p["website"],
+    )
 
-FASI_ORG = OrgEinheit(
-    direktion="Baudirektion",
-    amt="Fachstelle Verkehrssicherheit FaSi",
-    abteilung="Tiefbauamt",
-    team="Strasseninspektorat",
-)
+
+def _build_fasi_org() -> OrgEinheit:
+    """Baut FASI_ORG aus kontakte.json."""
+    k = _load_kontakte()
+    org = k["fasi_org"]
+    return OrgEinheit(
+        direktion=org["direktion"],
+        amt=org["abteilung"],
+        abteilung=org["amt"],
+        team=None,
+    )
+
+
+FASI: KontaktPerson = _build_fasi()
+FASI_ORG: OrgEinheit = _build_fasi_org()
