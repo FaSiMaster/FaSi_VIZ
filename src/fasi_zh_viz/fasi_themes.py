@@ -4,6 +4,10 @@ Diese Schicht liegt ÜBER dem offiziellen Kanton Zürich CD (tokens.json).
 Die Basisfarben sind unveränderlich — hier wird nur die thematische
 Zuweisung für die Fachstelle Verkehrssicherheit (FaSi, Baudirektion ZH) definiert.
 
+Quelle Unfalltypen: ASTRA, Unfalltypenblatt (UTF),
+https://www.astra.admin.ch/astra/de/home/dokumentation/unfalldaten.html
+Klassierung nach ASTRA-Unfallaufnahmeformular Formular 13.004.
+
 Verwendung:
     from fasi_zh_viz.fasi_themes import get_theme_palette, UNFALLSCHWERE_PALETTE
     colors = get_theme_palette("unfallschwere")
@@ -27,14 +31,16 @@ UNFALLSCHWERE_PALETTE: Dict[str, str] = {
 
 # ---------------------------------------------------------------------------
 # Unfalltypen-Palette (nach ASTRA Unfalltyp-Klassifikation)
+# Quelle: ASTRA Unfalltypenblatt (UTF), Formular 13.004
+# https://www.astra.admin.ch/astra/de/home/dokumentation/unfalldaten.html
 # ---------------------------------------------------------------------------
 UNFALLTYP_PALETTE: Dict[str, str] = {
-    "auffahrunfall":     "#0076BD",  # Blau ZH
-    "abbiegeunfall":     "#009A8E",  # Grün/Türkis ZH
-    "überholunfall":     "#6E1C81",  # Lila ZH
-    "fussgängerunfall":  "#E87600",  # Orange ZH
-    "wildunfall":        "#006400",  # Dunkelgrün (ausserorts)
-    "selbstunfall":      "#666666",  # Grau 60
+    "auffahrunfall":     "#0076BD",  # Blau ZH  – ASTRA UTF Typ 1: Auffahren
+    "abbiegeunfall":     "#009A8E",  # Grün/Türkis ZH – ASTRA UTF Typ 2: Abbiegen/Einmünden
+    "überholunfall":     "#6E1C81",  # Lila ZH  – ASTRA UTF Typ 3: Überholen/Spurwechsel
+    "fussgängerunfall":  "#E87600",  # Orange ZH – ASTRA UTF Typ 5: Fussgängerunfall
+    "wildunfall":        "#006400",  # Dunkelgrün – ASTRA UTF Typ 6: Tierunfall (ausserorts)
+    "selbstunfall":      "#666666",  # Grau 60  – ASTRA UTF Typ 7: Selbstunfall
 }
 
 # ---------------------------------------------------------------------------
