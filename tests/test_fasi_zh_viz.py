@@ -24,7 +24,7 @@ class TestTokens:
 
     def test_tokens_version(self):
         tokens = load_tokens()
-        assert tokens["meta"]["version"] == "2.3.0"
+        assert tokens["meta"]["version"] == "2.5.0"
 
     def test_infographics_palette_exists(self):
         tokens = load_tokens()

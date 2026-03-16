@@ -6,6 +6,23 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [2.5.0] – 2026-03-15
+
+### Sicherheit
+- `settings.local.json` aus Git-Tracking entfernt (`.gitignore` erweitert)
+- Persönliche Kontaktdaten in externe `kontakte.json` ausgelagert (kein Package-Rebuild bei Personalwechsel)
+
+### Hinzugefügt
+- ARIA-Attribute in `footer.py` und `responsible.py` (KZH-Barrierefreiheitsvorgaben)
+- `examples/einfuehrung.ipynb`: Einführungs-Notebook mit 4 Beispielzellen
+- `requirements-dev.txt` und `requirements-min.txt`: Dependency-Lock-Files
+- Konkrete ASTRA-Quellenbelege in `fasi_themes.py` (UTF Formular 13.004)
+
+### Tests
+- `TestARIAKomponenten`: 3 neue ARIA-Tests
+
+---
+
 ## [2.4.0] – 2026-03-11
 
 ### Hinzugefügt
@@ -107,6 +124,7 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+[2.5.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.1.0...v2.2.0

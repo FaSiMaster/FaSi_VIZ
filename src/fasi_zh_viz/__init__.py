@@ -17,7 +17,7 @@ Verwendung:
     print(build_source_line("Statistisches Amt", "21.01.2026"))
 """
 
-__version__ = "2.4.0"
+__version__ = "2.5.0"
 
 # Tokens & CSS
 from .tokens import load_tokens, load_css
