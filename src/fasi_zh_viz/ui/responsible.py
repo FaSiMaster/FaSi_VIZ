@@ -14,12 +14,12 @@ def _safe_url(url: str) -> str:
 def verantwortliche_stellen_html(entries: List[Tuple[str, str]]) -> str:
     title = "Für dieses Thema zuständig:"
     chips = "\n".join([
-        f"<a class='fasi-chip' href='{_safe_url(url)}'>{html.escape(label)}</a>"
+        f"<a class='fasi-chip' role='listitem' href='{_safe_url(url)}' aria-label='{html.escape(label)}'>{html.escape(label)}</a>"
         for label, url in entries
     ])
     return f"""<section class="fasi-responsible-stellen" aria-label="{title}">
   <h2>{title}</h2>
-  <div class="fasi-chip-group">
+  <div class="fasi-chip-group" role="list">
     {chips}
   </div>
 </section>"""

@@ -543,6 +543,40 @@ class TestUIKomponenten:
             footer_html("unbekannt")
 
 
+class TestARIAKomponenten:
+    """Tests für ARIA-Barrierefreiheitsattribute in HTML-Komponenten (NEU in v2.5)."""
+
+    def test_footer_role_contentinfo(self):
+        from fasi_zh_viz.ui.footer import footer_html
+        html = footer_html("website")
+        assert 'role="contentinfo"' in html
+
+    def test_responsible_aria_label(self):
+        from fasi_zh_viz.ui.responsible import verantwortliche_stellen_html
+        html_out = verantwortliche_stellen_html([
+            ("Statistisches Amt", "https://www.zh.ch/statistik")
+        ])
+        assert 'aria-label=' in html_out
+
+    def test_responsible_chip_role_listitem(self):
+        from fasi_zh_viz.ui.responsible import verantwortliche_stellen_html
+        html_out = verantwortliche_stellen_html([
+            ("Tiefbauamt", "https://www.zh.ch/tba")
+        ])
+        assert "role='listitem'" in html_out or 'role="listitem"' in html_out
+        assert "role='list'" in html_out or 'role="list"' in html_out
+
+    def test_footer_nav_aria_label(self):
+        from fasi_zh_viz.ui.footer import footer_html
+        html_out = footer_html("website")
+        assert "aria-label='Footer-Navigation'" in html_out or 'aria-label="Footer-Navigation"' in html_out
+
+    def test_footer_external_links_aria_label(self):
+        from fasi_zh_viz.ui.footer import footer_html
+        html_out = footer_html("website")
+        assert 'aria-label="Externer Link:' in html_out
+
+
 class TestFaSiThemes:
     """Tests für FaSi-eigene Farbthemen (Verkehrssicherheit)."""
 

@@ -30,21 +30,21 @@ def footer_html(kind: str, include_impressum: bool = False, include_version: boo
         menu_links = True
         social = True
 
-    submenu_html = "\n".join([f'    <li><a href="#">{item}</a></li>' for item in submenu])
+    submenu_html = "\n".join([f'    <li role="listitem"><a href="#" aria-label="Externer Link: {item}">{item}</a></li>' for item in submenu])
 
     links_menu_html = ""
     if menu_links:
-        links_menu_html = "<nav class='fasi-footer-menu' aria-label='Footer-Menü'><ul><li><a href='#'>Kontakt</a></li><li><a href='#'>News</a></li><li><a href='#'>Medien</a></li></ul></nav>"
+        links_menu_html = "<nav class='fasi-footer-menu' aria-label='Footer-Navigation'><ul role='list'><li role='listitem'><a href='#'>Kontakt</a></li><li role='listitem'><a href='#'>News</a></li><li role='listitem'><a href='#'>Medien</a></li></ul></nav>"
 
     social_html = ""
     if social:
-        social_html = "<div class='fasi-footer-social' aria-label='Social Media'><a href='#' rel='noopener'>LinkedIn</a><a href='#' rel='noopener'>YouTube</a></div>"
+        social_html = "<div class='fasi-footer-social' aria-label='Social Media'><a href='#' rel='noopener' aria-label='Externer Link: LinkedIn'>LinkedIn</a><a href='#' rel='noopener' aria-label='Externer Link: YouTube'>YouTube</a></div>"
 
-    return f"""<footer class="fasi-footer">
+    return f"""<footer class="fasi-footer" role="contentinfo">
   <h2>{sender}</h2>
   {links_menu_html}
   <nav class="fasi-footer-submenu" aria-label="Footer-Submenü">
-    <ul>
+    <ul role="list">
 {submenu_html}
     </ul>
   </nav>
