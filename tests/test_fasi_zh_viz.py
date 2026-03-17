@@ -585,6 +585,7 @@ class TestFaSiThemes:
         themes = list_themes()
         assert "unfallschwere" in themes
         assert "unfalltyp" in themes
+        assert "ampel" in themes
         assert "trend" in themes
         assert "verkehrsteilnehmer" in themes
         assert "strassentyp" in themes
@@ -592,9 +593,23 @@ class TestFaSiThemes:
     def test_unfallschwere_drei_stufen(self):
         from fasi_zh_viz import get_theme_palette
         palette = get_theme_palette("unfallschwere")
+        assert "sachschaden" in palette
         assert "leichtverletzte" in palette
         assert "schwerverletzte" in palette
         assert "getötete" in palette
+        assert "unbekannt" in palette
+
+    def test_ampel_palette(self):
+        from fasi_zh_viz import AMPEL_PALETTE, get_ampel_color
+        assert "gruen" in AMPEL_PALETTE
+        assert "gelb" in AMPEL_PALETTE
+        assert "rot" in AMPEL_PALETTE
+        assert "grau" in AMPEL_PALETTE
+        assert get_ampel_color("gruen") == "#1A7F1F"
+        assert get_ampel_color("gelb") == "#FFCC00"
+        assert get_ampel_color("rot") == "#D93C1A"
+        assert get_ampel_color("grau") == "#949494"
+        assert get_ampel_color("unbekannt") is None
 
     def test_theme_farben_gueltige_hex(self):
         """Alle Theme-Farben müssen gültige Hex-Werte sein."""
@@ -629,8 +644,10 @@ class TestFaSiThemes:
 
     def test_get_unfallschwere_color(self):
         from fasi_zh_viz import get_unfallschwere_color
+        assert get_unfallschwere_color("sachschaden") == "#0076BD"
         assert get_unfallschwere_color("getötete") == "#B31523"
-        assert get_unfallschwere_color("unbekannt") is None
+        assert get_unfallschwere_color("unbekannt") == "#949494"
+        assert get_unfallschwere_color("nichtexistent") is None
 
     def test_unbekanntes_theme_raises(self):
         import pytest

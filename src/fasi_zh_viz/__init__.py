@@ -1,7 +1,7 @@
 """
 FaSi ZH Viz - Visualisierungs-Library gemäss Kanton Zürich Designsystem
 
-Version: 2.2.0
+Version: 2.6.0
 
 Verwendung:
     from fasi_zh_viz import load_tokens, apply_matplotlib_style
@@ -17,7 +17,7 @@ Verwendung:
     print(build_source_line("Statistisches Amt", "21.01.2026"))
 """
 
-__version__ = "2.5.0"
+__version__ = "2.6.0"
 
 # Tokens & CSS
 from .tokens import load_tokens, load_css
@@ -89,8 +89,10 @@ from .fasi_themes import (
     get_theme_labels,
     list_themes,
     get_unfallschwere_color,
+    get_ampel_color,
     UNFALLSCHWERE_PALETTE,
     UNFALLTYP_PALETTE,
+    AMPEL_PALETTE,
     TREND_PALETTE,
     VERKEHRSTEILNEHMER_PALETTE,
     STRASSENTYP_PALETTE,
@@ -157,8 +159,10 @@ __all__ = [
     "get_theme_labels",
     "list_themes",
     "get_unfallschwere_color",
+    "get_ampel_color",
     "UNFALLSCHWERE_PALETTE",
     "UNFALLTYP_PALETTE",
+    "AMPEL_PALETTE",
     "TREND_PALETTE",
     "VERKEHRSTEILNEHMER_PALETTE",
     "STRASSENTYP_PALETTE",

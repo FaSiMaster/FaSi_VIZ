@@ -1,0 +1,7 @@
+.Rproj.user
+.performance
+dev
+.dockerignore
+.Rbuildignore
+.RData
+.Rhistory

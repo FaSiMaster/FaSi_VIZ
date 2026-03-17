@@ -1,0 +1,10 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^app\.R$
+^\.performance$
+^dev$
+^\.dockerignore$
+^\.rscignore$
+^Dockerfile$
+^rsconnect$
+^LICENSE\.md$

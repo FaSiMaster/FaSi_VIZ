@@ -1,0 +1,186 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+- dev
+
+resources:
+- repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '89644cb1-c6a6-496e-97fe-a9d01238111b'
+  imageRepository: 'alpine-rshiny'
+  containerRegistry: 'baudifasi.azurecr.io'
+  dockerfilePath: '**/Dockerfiles/alpine-rshiny.dockerfile'
+  tag: 'latest'
+
+
+  imageRepository1: 'safetycockpit'
+  dockerfilePath1: '**/safetycockpit.dockerfile'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: Build_Dev
+  displayName: Build and push dev stage
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/dev')
+  jobs:
+  - job: docker_build_and_push
+    displayName: Docker Build and Push
+    condition: ne(variables['Build.Reason'], 'PullRequest')
+    # variables: 
+    #   BUILD_SHINEY: false
+    steps:
+    - checkout: self
+      fetchDepth: "0"
+      clean: "true"
+      fetchTags: "true"
+    
+    # Alpine Rshiny
+    - task: Docker@2
+      displayName: Login to ACR
+      inputs:
+        command: login
+        containerRegistry: $(dockerRegistryServiceConnection)
+    - script: |
+          docker pull baudifasi.azurecr.io/alpine-rshiny:latest
+          export shiney_build_label=$(docker inspect --format '{{ index .Config.Labels "com.azure.dev.image.build.sourceversion"}}' baudifasi.azurecr.io/alpine-rshiny:latest)
+          
+          git --no-pager diff --name-only $shiney_build_label $(Build.SourceVersion) | grep -q alpine-rshiny.dockerfile && echo "##vso[task.setvariable variable=buildshiney;]true" || true
+      displayName: Check if alpine-rshiny.dockerfile was changed
+      name: check_shiney
+    - task: Docker@2
+      displayName: rshiney Build and push a new image to container registry
+      condition: and(eq(variables['imagename'], ''),eq(variables['buildshiney'], 'true'))
+      inputs:
+        command: buildAndPush
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(Build.SourceBranchName)
+          $(Build.SourceVersion)
+          latest
+        repository: $(imageRepository)
+        Dockerfile: $(dockerfilePath)
+        addBaseImageData: false
+
+        # Safetycockpit
+    - task: Docker@2
+      displayName: Login to ACR
+      inputs:
+        command: login
+        containerRegistry: $(dockerRegistryServiceConnection)
+    - script: |
+        image="$(containerRegistry)/$(imageRepository1)"
+        docker pull "$image:$(Build.SourceVersion)" && echo "##vso[task.setvariable variable=imagename;]$image" || true
+      displayName: Test if image exists for this commit
+    - script: |
+        docker tag "$(imagename):$(Build.SourceVersion)" "$(imagename):$(Build.SourceBranchName)"
+        docker push "$(imagename):$(Build.SourceBranchName)"
+      displayName: Push new tag if image exists
+      condition: ne(variables['imagename'], '')
+    - task: Docker@2
+      displayName: Build and push a new image to container registry
+      condition: eq(variables['imagename'], '')
+      inputs:
+        command: buildAndPush
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          latest
+          $(Build.SourceBranchName)
+          $(Build.SourceVersion)
+        repository: $(imageRepository1)
+        Dockerfile: $(dockerfilePath1)
+        addBaseImageData: false
+    - task: AzureWebAppContainer@1
+      displayName: 'Deploy Safetycockpit'
+      inputs:
+        azureSubscription: 'AzureRM'
+        appName: 'safetycockpit-dev'
+        imageName: '$(containerRegistry)/$(imageRepository1):$(Build.SourceVersion)'
+
+- stage: Build
+  displayName: Build and push stage
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  jobs:
+  - job: docker_build_and_push
+    displayName: Docker Build and Push
+    condition: ne(variables['Build.Reason'], 'PullRequest')
+    # variables: 
+    #   BUILD_SHINEY: false
+    steps:
+    - checkout: self
+      fetchDepth: "0"
+      clean: "true"
+      fetchTags: "true"
+    
+    # Alpine Rshiny
+    - task: Docker@2
+      displayName: Login to ACR
+      inputs:
+        command: login
+        containerRegistry: $(dockerRegistryServiceConnection)
+    - script: |
+          
+
+          docker pull baudifasi.azurecr.io/alpine-rshiny:latest
+          export shiney_build_label=$(docker inspect --format '{{ index .Config.Labels "com.azure.dev.image.build.sourceversion"}}' baudifasi.azurecr.io/alpine-rshiny:latest)
+          
+          git --no-pager diff --name-only $shiney_build_label $(Build.SourceVersion) | grep -q alpine-rshiny.dockerfile && echo "##vso[task.setvariable variable=buildshiney;]true" || true
+      displayName: Check if alpine-rshiny.dockerfile was changed
+      name: check_shiney
+    - task: Docker@2
+      displayName: rshiney Build and push a new image to container registry
+      condition: and(eq(variables['imagename'], ''),eq(variables['buildshiney'], 'true'))
+      inputs:
+        command: buildAndPush
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          latest
+          $(Build.SourceBranchName)
+          $(Build.SourceVersion)
+        repository: $(imageRepository)
+        Dockerfile: $(dockerfilePath)
+        addBaseImageData: false
+    
+    # Safetycockpit
+    - task: Docker@2
+      displayName: Login to ACR
+      inputs:
+        command: login
+        containerRegistry: $(dockerRegistryServiceConnection)
+    - script: |
+        image="$(containerRegistry)/$(imageRepository1)"
+        docker pull "$image:$(Build.SourceVersion)" && echo "##vso[task.setvariable variable=imagename;]$image" || true
+      displayName: Test if image exists for this commit
+    - script: |
+        docker tag "$(imagename):$(Build.SourceVersion)" "$(imagename):$(Build.SourceBranchName)"
+        docker push "$(imagename):$(Build.SourceBranchName)"
+      displayName: Push new tag if image exists
+      condition: ne(variables['imagename'], '')
+    - task: Docker@2
+      displayName: Build and push a new image to container registry
+      condition: eq(variables['imagename'], '')
+      inputs:
+        command: buildAndPush
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          latest
+          $(Build.SourceBranchName)
+          $(Build.SourceVersion)
+        repository: $(imageRepository1)
+        Dockerfile: $(dockerfilePath1)
+        addBaseImageData: false
+
+        # Wenn sich rshiny dockerfile geändert hat, dann wird ein neues Image erstellt
+    - task: AzureWebAppContainer@1
+      displayName: 'Deploy Safetycockpit'
+      inputs:
+        azureSubscription: 'AzureRM'
+        appName: 'safetycockpit'
+        imageName: '$(containerRegistry)/$(imageRepository1):$(Build.SourceVersion)'
+
+        

@@ -3,472 +3,368 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FaSi ZH Viz – Design Showcase v2.4.0</title>
+<title>FaSi ZH Viz – Design Showcase v2.6.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   /* =============================================
-     FASI ZH VIZ – DESIGN TOKENS (aus tokens.json)
+     FASI ZH VIZ – DESIGN TOKENS v2.6.0
+     Quelle: tokens.json (Single Source of Truth)
      ============================================= */
   :root {
-    /* Akzentfarben (aus statistikZH/leu Figma-Tokens) */
+    /* Akzentfarben (statistikZH/leu + CD Manual 2025) */
     --blau:        #0076BD;
-    --dunkelblau:  #003F7F;
-    --hellblau:    #5BC5F2;
-    --gruen:       #3B7B3B;
-    --rot:         #B31523;
-    --orange:      #E87600;
-    --gelb:        #FFCC00;
-    --lila:        #9966CC;
+    --dunkelblau:  #00407C;
+    --tuerkis:     #00797B;
+    --gruen:       #1A7F1F;
+    --bordeaux:    #B01657;
+    --magenta:     #D40053;
+    --violett:     #7F3DA7;
+    --grau60-acc:  #666666;
 
-    /* FaSi Unfallschwere-Palette */
+    /* FaSi Unfallschwere-Palette v2.6.0 (5 Stufen) */
+    --sachschaden: #0076BD;
     --leicht:      #FFCC00;
     --schwer:      #E87600;
     --getoetet:    #B31523;
+    --unbekannt:   #949494;
 
-    /* Grautöne */
-    --grau-10:     #E5E5E5;
-    --grau-20:     #CCCCCC;
-    --grau-40:     #999999;
-    --grau-60:     #666666;
-    --grau-80:     #333333;
-    --schwarz:     #1A1A1A;
+    /* FaSi Ampel-Palette v2.6.0 */
+    --ampel-gruen: #1A7F1F;
+    --ampel-gelb:  #FFCC00;
+    --ampel-rot:   #D93C1A;
+    --ampel-grau:  #949494;
+
+    /* Funktion (Bootstrap-Semantic) */
+    --funk-cyan:   #009EE0;
+    --funk-rot:    #D93C1A;
+    --funk-gruen:  #1A7F1F;
+
+    /* Infografiken-Palette (Auswahl) */
+    --inf-orange:  #DC7700;
+    --inf-cyan:    #009EE0;
+
+    /* Soft-Akzentfarben inkl. neu v2.6.0 */
+    --softblau:     #EDF5FA;
+    --blaugrau:     #E0E8EE;
+    --softtuerkis:  #E8F3F2;
+    --softgruen:    #EBF6EB;
+    --softbordeaux: #F6E3EA;
+    --softrot:      #FCEDF3;
+    --softviolett:  #ECE2F1;
+    --softgelb:     #FFF5CC;   /* NEU v2.6.0 */
+    --softalarmrot: #FFD5CC;   /* NEU v2.6.0 */
+
+    /* Grautöne (Grautoene aus tokens.json) */
+    --black100:    #000000;
+    --black80:     #333333;
+    --black60:     #666666;
+    --black40:     #949494;
+    --black20:     #CCCCCC;
+    --black10:     #F0F0F0;
+    --black5:      #F7F7F7;
     --weiss:       #FFFFFF;
 
-    /* CD Manual Druckfarben */
-    --gelb-zh:     #FFCC00;
-    --blau-zh:     #0076BD;
-
     /* Typografie */
-    --font-web:    'Inter', Arial, sans-serif;
+    --font-web:    'Inter', 'Helvetica Now', Arial, sans-serif;
     --font-office: Arial, sans-serif;
 
-    /* Typoskala (Web) */
-    --fs-tiny:     12px;
-    --fs-xs:       13px;
-    --fs-sm:       14px;
-    --fs-base:     16px;
-    --fs-md:       18px;
-    --fs-lg:       20px;
-    --fs-xl:       24px;
-    --fs-2xl:      28px;
-    --fs-3xl:      32px;
+    /* Typoskala (Web, aus tokens.json) */
+    --fs-tiny:  12px;
+    --fs-sm:    14px;
+    --fs-base:  16px;
+    --fs-md:    18px;
+    --fs-lg:    20px;
+    --fs-xl:    24px;
+    --fs-2xl:   28px;
+    --fs-3xl:   32px;
+    --fs-xs:    13px;
 
     /* Layout */
-    --max-width:   73rem;
-    --gap:         1.5rem;
-    --radius:      4px;
-    --radius-lg:   8px;
+    --max-width: 73rem;
+    --gap:       1.5rem;
+    --radius:    4px;
+    --radius-lg: 8px;
 
-    /* Shadows */
-    --shadow-sm:   0 1px 3px rgba(0,0,0,0.12);
-    --shadow:      0 2px 8px rgba(0,0,0,0.14);
-    --shadow-lg:   0 4px 20px rgba(0,0,0,0.16);
+    /* Shadows (aus tokens.json) */
+    --shadow-sm: 0px 0px 2px rgb(0 0 0 / 40%);
+    --shadow:    0px 0px 16px rgb(0 0 0 / 20%);
+    --shadow-lg: 0px 0px 80px rgb(0 0 0 / 20%);
   }
 
   /* =============================================
      BASE
      ============================================= */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { font-size: 16px; scroll-behavior: smooth; }
-
-  body {
-    font-family: var(--font-web);
-    color: var(--schwarz);
-    background: #F4F4F4;
-    line-height: 1.6;
-  }
+  body { font-family: var(--font-web); color: var(--black80); background: var(--black10); line-height: 1.6; }
 
   /* =============================================
      LAYOUT
      ============================================= */
   .page-header {
-    background: var(--blau);
-    color: white;
+    background: var(--blau); color: white;
     padding: 2rem 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
   }
-  .page-header h1 { font-size: var(--fs-xl); font-weight: 600; letter-spacing: -0.01em; }
-  .page-header .subtitle { font-size: var(--fs-sm); opacity: 0.85; margin-top: 4px; }
+  .page-header h1    { font-size: var(--fs-xl); font-weight: 600; letter-spacing: -0.01em; }
+  .page-header .sub  { font-size: var(--fs-sm); opacity: 0.85; margin-top: 4px; }
   .version-badge {
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.4);
-    border-radius: 20px;
-    padding: 6px 16px;
-    font-size: var(--fs-xs);
-    font-weight: 500;
+    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 20px; padding: 6px 16px; font-size: var(--fs-xs); font-weight: 500;
+  }
+  .new-badge {
+    display: inline-block; background: #FFCC00; color: #000;
+    font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px;
+    vertical-align: middle; margin-left: 6px; letter-spacing: .04em;
   }
 
-  .container {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 2rem 2.5rem;
-  }
-
-  .section {
-    margin-bottom: 3.5rem;
-  }
+  .container { max-width: var(--max-width); margin: 0 auto; padding: 2rem 2.5rem; }
+  .section   { margin-bottom: 3.5rem; }
 
   .section-label {
-    font-size: var(--fs-xs);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    color: var(--grau-60);
-    margin-bottom: 1rem;
-    padding-bottom: .5rem;
-    border-bottom: 1px solid var(--grau-20);
+    font-size: var(--fs-xs); font-weight: 600; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--black60);
+    margin-bottom: 1rem; padding-bottom: .5rem;
+    border-bottom: 1px solid var(--black20);
   }
-
-  .section-title {
-    font-size: var(--fs-2xl);
-    font-weight: 600;
-    margin-bottom: .25rem;
-    letter-spacing: -0.02em;
-  }
-
-  .section-desc {
-    font-size: var(--fs-sm);
-    color: var(--grau-60);
-    margin-bottom: 1.5rem;
-  }
+  .section-title { font-size: var(--fs-2xl); font-weight: 600; margin-bottom: .25rem; letter-spacing: -0.02em; }
+  .section-desc  { font-size: var(--fs-sm); color: var(--black60); margin-bottom: 1.5rem; }
 
   /* =============================================
      FARBPALETTEN
      ============================================= */
   .palette-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 12px;
-    margin-bottom: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px; margin-bottom: 1rem;
   }
-
-  .swatch {
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .swatch-color {
-    height: 72px;
-    display: flex;
-    align-items: flex-end;
-    padding: 8px;
-  }
-
-  .swatch-wcag {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 3px;
-    background: rgba(0,0,0,0.25);
-    color: white;
-  }
-
-  .swatch-info {
-    background: white;
-    padding: 8px 10px;
-  }
-
-  .swatch-name {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--schwarz);
-  }
-
-  .swatch-hex {
-    font-size: 11px;
-    color: var(--grau-60);
-    font-family: monospace;
-  }
-
-  /* Unfallschwere highlight */
-  .palette-unfallschwere { display: flex; gap: 12px; margin-bottom: 1.5rem; }
-  .ufp {
-    flex: 1;
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    color: var(--schwarz);
-    position: relative;
-    overflow: hidden;
-  }
-  .ufp-leicht { background: var(--leicht); }
-  .ufp-schwer { background: var(--schwer); color: white; }
-  .ufp-getoetet { background: var(--getoetet); color: white; }
-  .ufp-label { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; opacity: .8; }
-  .ufp-name { font-size: 20px; font-weight: 600; margin: 4px 0; }
-  .ufp-hex { font-family: monospace; font-size: 12px; opacity: .7; }
-  .ufp-wcag { font-size: 11px; opacity: .7; margin-top: 8px; }
-
-  /* =============================================
-     TYPOGRAFIE
-     ============================================= */
-  .type-scale { display: flex; flex-direction: column; gap: 8px; }
-  .type-row {
-    display: flex;
-    align-items: baseline;
-    gap: 1.5rem;
-    padding: .75rem 1rem;
-    background: white;
-    border-radius: var(--radius);
-    border: 1px solid var(--grau-10);
-  }
-  .type-meta {
-    min-width: 120px;
-    font-size: 11px;
-    font-family: monospace;
-    color: var(--grau-60);
-  }
-  .type-sample { flex: 1; }
-
-  /* =============================================
-     CHARTS GRID
-     ============================================= */
-  .charts-grid {
+  .palette-grid-wide {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--gap);
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px; margin-bottom: 1rem;
   }
 
-  .chart-card {
-    background: white;
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--grau-10);
+  .swatch { border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .swatch-color {
+    height: 64px; display: flex; align-items: flex-end; padding: 7px;
   }
+  .swatch-wcag {
+    font-size: 10px; font-weight: 600; padding: 2px 5px; border-radius: 3px;
+    background: rgba(0,0,0,0.28); color: white;
+  }
+  .swatch-info { background: white; padding: 7px 9px; }
+  .swatch-name { font-size: 11px; font-weight: 600; color: var(--black80); }
+  .swatch-hex  { font-size: 10px; color: var(--black60); font-family: monospace; }
 
-  .chart-card.wide {
-    grid-column: 1 / -1;
+  /* Unfallschwere Cards (5 Stufen) */
+  .ufp-row { display: flex; gap: 10px; margin-bottom: 2rem; flex-wrap: wrap; }
+  .ufp {
+    flex: 1; min-width: 130px; border-radius: var(--radius-lg); padding: 1.25rem;
+    position: relative; overflow: hidden;
   }
+  .ufp-sachschaden { background: var(--sachschaden); color: white; }
+  .ufp-leicht      { background: var(--leicht);      color: var(--black80); }
+  .ufp-schwer      { background: var(--schwer);      color: white; }
+  .ufp-getoetet    { background: var(--getoetet);    color: white; }
+  .ufp-unbekannt   { background: var(--unbekannt);   color: white; }
+  .ufp-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; opacity: .75; }
+  .ufp-name  { font-size: 17px; font-weight: 600; margin: 3px 0; }
+  .ufp-hex   { font-family: monospace; font-size: 12px; opacity: .75; }
+  .ufp-wcag  { font-size: 11px; opacity: .7; margin-top: 6px; }
 
-  .chart-title {
-    font-size: var(--fs-base);
-    font-weight: 600;
-    margin-bottom: 2px;
-    color: var(--schwarz);
+  /* Ampel Cards */
+  .ampel-row { display: flex; gap: 12px; margin-bottom: 2rem; }
+  .ampel-card {
+    flex: 1; border-radius: var(--radius-lg); padding: 1.25rem 1rem;
+    text-align: center;
   }
+  .ampel-card .ampel-dot {
+    width: 48px; height: 48px; border-radius: 50%;
+    margin: 0 auto 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .ampel-card .ampel-label  { font-size: 13px; font-weight: 600; }
+  .ampel-card .ampel-cond   { font-size: 11px; color: var(--black60); margin-top: 3px; }
+  .ampel-card .ampel-hex    { font-family: monospace; font-size: 11px; color: var(--black60); margin-top: 4px; }
+  .ampel-bg-gruen { background: var(--softgruen); }
+  .ampel-bg-gelb  { background: var(--softgelb); }
+  .ampel-bg-rot   { background: var(--softalarmrot); }
+  .ampel-bg-grau  { background: var(--black10); }
 
-  .chart-subtitle {
-    font-size: var(--fs-xs);
-    color: var(--grau-60);
-    margin-bottom: 1rem;
+  /* Soft-Farben Zeile */
+  .soft-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .soft-swatch {
+    height: 52px; min-width: 90px; flex: 1; border-radius: var(--radius-lg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 1px solid var(--black20);
+    font-size: 10px; font-family: monospace; color: var(--black60);
+    gap: 2px;
   }
-
-  .chart-source {
-    font-size: 11px;
-    color: var(--grau-60);
-    margin-top: .75rem;
-    padding-top: .75rem;
-    border-top: 1px solid var(--grau-10);
-  }
-
-  .chart-wrapper {
-    position: relative;
-    width: 100%;
-  }
-
-  .chart-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 12px;
-    font-size: 12px;
-    color: var(--grau-60);
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .legend-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
+  .soft-swatch span { font-size: 9px; color: var(--black40); }
 
   /* =============================================
-     KENNZAHLEN KACHELN
+     CHARTS
+     ============================================= */
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
+  .chart-card {
+    background: white; border-radius: var(--radius-lg);
+    padding: 1.5rem; box-shadow: var(--shadow-sm);
+    border: 1px solid var(--black10);
+  }
+  .chart-card.wide { grid-column: 1 / -1; }
+  .chart-title    { font-size: var(--fs-base); font-weight: 600; margin-bottom: 2px; }
+  .chart-subtitle { font-size: var(--fs-xs); color: var(--black60); margin-bottom: 1rem; }
+  .chart-source   {
+    font-size: 11px; color: var(--black60);
+    margin-top: .75rem; padding-top: .75rem;
+    border-top: 1px solid var(--black10);
+  }
+  .chart-wrapper  { position: relative; width: 100%; }
+  .chart-legend   { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 12px; color: var(--black60); }
+  .legend-item    { display: flex; align-items: center; gap: 6px; }
+  .legend-dot     { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* =============================================
+     KPIs
      ============================================= */
   .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px; margin-bottom: 2rem;
   }
-
   .kpi-card {
-    background: white;
-    border-radius: var(--radius-lg);
-    padding: 1.25rem;
-    border: 1px solid var(--grau-10);
-    box-shadow: var(--shadow-sm);
+    background: white; border-radius: var(--radius-lg);
+    padding: 1.25rem; border: 1px solid var(--black10); box-shadow: var(--shadow-sm);
   }
-
-  .kpi-label {
-    font-size: 12px;
-    color: var(--grau-60);
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    font-weight: 500;
-  }
-
-  .kpi-value {
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
-
-  .kpi-delta {
-    font-size: 12px;
-    margin-top: 6px;
-    font-weight: 500;
-  }
-
+  .kpi-label { font-size: 11px; color: var(--black60); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; font-weight: 500; }
+  .kpi-value { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
+  .kpi-delta { font-size: 12px; margin-top: 6px; font-weight: 500; }
   .delta-down { color: #2E7D32; }
   .delta-up   { color: var(--getoetet); }
-  .delta-same { color: var(--grau-60); }
-
-  .kpi-bar {
-    height: 3px;
-    border-radius: 2px;
-    margin-top: 10px;
-    background: var(--grau-10);
-    overflow: hidden;
-  }
-
-  .kpi-bar-fill {
-    height: 100%;
-    border-radius: 2px;
-  }
+  .delta-same { color: var(--black60); }
+  .kpi-bar { height: 3px; border-radius: 2px; margin-top: 10px; background: var(--black10); overflow: hidden; }
+  .kpi-bar-fill { height: 100%; border-radius: 2px; }
 
   /* =============================================
-     VERKEHRSTEILNEHMER-TABELLE
+     SEQUENZPALETTE
      ============================================= */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: var(--fs-sm);
+  .seq-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 4px;
   }
+  .seq-swatch {
+    height: 36px; border-radius: 4px;
+    display: flex; align-items: flex-end;
+    padding: 3px;
+    position: relative;
+  }
+  .seq-swatch:hover::after {
+    content: attr(data-hex);
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+    background: var(--black80); color: white;
+    font-size: 10px; font-family: monospace;
+    padding: 2px 5px; border-radius: 3px; white-space: nowrap;
+    z-index: 10; pointer-events: none;
+  }
+  .seq-idx { font-size: 8px; color: rgba(0,0,0,0.35); font-family: monospace; line-height: 1; }
 
+  /* =============================================
+     TABELLE
+     ============================================= */
+  table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
   thead th {
-    text-align: left;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .07em;
-    color: var(--grau-60);
-    padding: 8px 12px;
-    border-bottom: 2px solid var(--grau-20);
+    text-align: left; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .07em; color: var(--black60);
+    padding: 8px 12px; border-bottom: 2px solid var(--black20);
   }
-
-  tbody td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--grau-10);
-    vertical-align: middle;
-  }
-
+  tbody td { padding: 10px 12px; border-bottom: 1px solid var(--black10); vertical-align: middle; }
   tbody tr:last-child td { border-bottom: none; }
-  tbody tr:hover { background: #F9F9F9; }
-
-  .vt-color-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
-    display: inline-block;
-    margin-right: 8px;
-    vertical-align: middle;
-  }
-
+  tbody tr:hover { background: var(--black5); }
+  .vt-dot { width: 12px; height: 12px; border-radius: 2px; display: inline-block; margin-right: 8px; vertical-align: middle; }
   .anzahl { font-variant-numeric: tabular-nums; text-align: right; font-family: monospace; }
-  .trend-chip {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 12px;
+  .trend-chip { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; }
+
+  .infografik-box {
+    background: white; border-radius: var(--radius-lg);
+    border: 1px solid var(--black10); padding: 1.5rem; box-shadow: var(--shadow-sm);
   }
+  .infografik-title      { font-size: var(--fs-lg); font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .infografik-untertitel { font-size: var(--fs-xs); color: var(--black60); margin-bottom: 1.25rem; }
 
   /* =============================================
-     INFOGRAFIK MUSTERBOX
+     TYPOSKALA
      ============================================= */
-  .infografik-box {
-    background: white;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--grau-10);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
+  .type-scale { display: flex; flex-direction: column; gap: 6px; }
+  .type-row {
+    display: flex; align-items: baseline; gap: 1.5rem;
+    padding: .75rem 1rem; background: white;
+    border-radius: var(--radius); border: 1px solid var(--black10);
   }
+  .type-meta  { min-width: 130px; font-size: 11px; font-family: monospace; color: var(--black60); }
+  .type-sample { flex: 1; }
 
-  .infografik-title {
-    font-size: var(--fs-lg);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    margin-bottom: 4px;
-  }
-
-  .infografik-untertitel {
-    font-size: var(--fs-xs);
-    color: var(--grau-60);
-    margin-bottom: 1.25rem;
-  }
-
-  /* Footer */
+  /* =============================================
+     FOOTER
+     ============================================= */
   .page-footer {
-    background: var(--schwarz);
-    color: white;
-    padding: 1.5rem 2.5rem;
-    font-size: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background: var(--black80); color: white;
+    padding: 1.5rem 2.5rem; font-size: 12px;
+    display: flex; justify-content: space-between; align-items: center;
     margin-top: 3rem;
   }
-
   .page-footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
 
-  @media (max-width: 900px) {
+  /* =============================================
+     RESPONSIVE
+     ============================================= */
+  @media (max-width: 960px) {
     .charts-grid { grid-template-columns: 1fr; }
+    .kpi-grid    { grid-template-columns: repeat(3, 1fr); }
+    .ufp-row     { flex-direction: column; }
+    .ampel-row   { flex-wrap: wrap; }
+    .seq-grid    { grid-template-columns: repeat(6, 1fr); }
+  }
+  @media (max-width: 640px) {
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-    .palette-unfallschwere { flex-direction: column; }
+    .seq-grid { grid-template-columns: repeat(4, 1fr); }
   }
 </style>
 </head>
 <body>
 
-<!-- ==========================================
-     HEADER
-     ========================================== -->
+<!-- HEADER -->
 <header class="page-header">
   <div>
     <h1>FaSi ZH Viz – Design Showcase</h1>
-    <div class="subtitle">Fachstelle Verkehrssicherheit · Tiefbauamt · Baudirektion Kanton Zürich</div>
+    <div class="sub">Fachstelle Verkehrssicherheit · Tiefbauamt · Baudirektion Kanton Zürich</div>
   </div>
-  <div class="version-badge">v2.4.0</div>
+  <div class="version-badge">v2.6.0</div>
 </header>
 
 <div class="container">
 
-  <!-- ==========================================
-       SECTION 1: KENNZAHLEN
-       ========================================== -->
+  <!-- ============================================================
+       SECTION 1: KENNZAHLEN (5 KPIs inkl. sachschaden NEU)
+       ============================================================ -->
   <section class="section">
-    <div class="section-label">Dashboard · Kanton Zürich · Fiktive Daten</div>
-    <h2 class="section-title">Verkehrsunfälle 2023 – Kanton Zürich</h2>
-    <p class="section-desc">Beispieldarstellung. Alle Zahlen sind fiktiv und dienen ausschliesslich der Visualisierung des Designsystems.</p>
+    <div class="section-label">Dashboard · Kanton Zürich · Fiktive Musterdaten</div>
+    <h2 class="section-title">Verkehrsunfälle 2024 – Kanton Zürich</h2>
+    <p class="section-desc">Alle Zahlen sind fiktiv und dienen ausschliesslich der Darstellung des Designsystems.</p>
 
     <div class="kpi-grid">
       <div class="kpi-card">
+        <div class="kpi-label">Unfälle (Sachschaden)</div>
+        <div class="kpi-value" style="color:var(--sachschaden)">4'012</div>
+        <div class="kpi-delta delta-down">▼ −3,8 % vs. Vorjahr</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="background:var(--sachschaden);width:64%"></div></div>
+      </div>
+      <div class="kpi-card">
         <div class="kpi-label">Leichtverletzte</div>
-        <div class="kpi-value" style="color:var(--schwarz)">1'845</div>
+        <div class="kpi-value" style="color:var(--black80)">1'845</div>
         <div class="kpi-delta delta-up">▲ +2,6 % vs. Vorjahr</div>
         <div class="kpi-bar"><div class="kpi-bar-fill" style="background:var(--leicht);width:78%"></div></div>
       </div>
@@ -485,170 +381,265 @@
         <div class="kpi-bar"><div class="kpi-bar-fill" style="background:var(--getoetet);width:18%"></div></div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Unfälle total</div>
-        <div class="kpi-value" style="color:var(--blau)">6'234</div>
-        <div class="kpi-delta delta-same">→ −0,4 % vs. Vorjahr</div>
-        <div class="kpi-bar"><div class="kpi-bar-fill" style="background:var(--blau);width:62%"></div></div>
+        <div class="kpi-label">Schwere unbekannt</div>
+        <div class="kpi-value" style="color:var(--unbekannt)">56</div>
+        <div class="kpi-delta delta-same">→ Datenqualität prüfen</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="background:var(--unbekannt);width:8%"></div></div>
       </div>
     </div>
   </section>
 
-  <!-- ==========================================
+  <!-- ============================================================
        SECTION 2: CHARTS
-       ========================================== -->
+       ============================================================ -->
   <section class="section">
     <div class="section-label">Visualisierungen</div>
 
     <div class="charts-grid">
 
-      <!-- Chart 1: Unfallschwere Zeitreihe -->
+      <!-- Chart 1: Zeitreihe Unfallschwere (5 Stufen) -->
       <div class="chart-card wide">
-        <div class="chart-title">Verunfallte nach Schwere – Entwicklung 2014–2023</div>
+        <div class="chart-title">Unfälle nach Schwere – Entwicklung 2015–2024</div>
         <div class="chart-subtitle">Kanton Zürich · Strassenverkehr · Fiktive Daten</div>
         <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:var(--sachschaden)"></span>Sachschaden</span>
           <span class="legend-item"><span class="legend-dot" style="background:var(--leicht)"></span>Leichtverletzte</span>
           <span class="legend-item"><span class="legend-dot" style="background:var(--schwer)"></span>Schwerverletzte</span>
           <span class="legend-item"><span class="legend-dot" style="background:var(--getoetet)"></span>Getötete (×10)</span>
+          <span class="legend-item"><span class="legend-dot" style="background:var(--unbekannt)"></span>Unbekannte Schwere</span>
         </div>
-        <div class="chart-wrapper" style="height:260px">
+        <div class="chart-wrapper" style="height:270px">
           <canvas id="chartZeitreihe"></canvas>
         </div>
-        <div class="chart-source">Quelle: Fiktive Daten (Muster) | Stand: 2024 | FaSi ZH Viz v2.4.0</div>
+        <div class="chart-source">Quelle: Fiktive Musterdaten (FaSi ZH Viz v2.6.0) | Stand: 2025</div>
       </div>
 
-      <!-- Chart 2: Unfalltypen -->
+      <!-- Chart 2: Unfalltypen Donut -->
       <div class="chart-card">
-        <div class="chart-title">Unfälle nach Unfalltyp 2023</div>
+        <div class="chart-title">Unfälle nach Unfalltyp 2024</div>
         <div class="chart-subtitle">Kanton Zürich · Anteil in % · Fiktive Daten</div>
-        <div class="chart-wrapper" style="height:260px">
+        <div class="chart-wrapper" style="height:270px">
           <canvas id="chartUnfalltyp"></canvas>
         </div>
         <div class="chart-source">Quelle: Fiktive Daten | Klassierung nach ASTRA UTF</div>
       </div>
 
-      <!-- Chart 3: Verkehrsteilnehmer -->
+      <!-- Chart 3: Ampel-Cockpit (NEU v2.6.0) -->
       <div class="chart-card">
-        <div class="chart-title">Getötete nach Verkehrsteilnehmer 2023</div>
-        <div class="chart-subtitle">Kanton Zürich · Absolute Zahlen · Fiktive Daten</div>
-        <div class="chart-wrapper" style="height:260px">
-          <canvas id="chartVT"></canvas>
+        <div class="chart-title">Ampel-Cockpit – Vergleich mit Referenzzeitraum
+          <span class="new-badge">NEU v2.6.0</span>
         </div>
-        <div class="chart-source">Quelle: Fiktive Daten | FaSi ZH Viz v2.4.0</div>
+        <div class="chart-subtitle">Kanton Zürich · Quartilvergleich (Q25/Median/Q75) · Fiktive Daten</div>
+        <div id="ampelCockpit" style="display:flex;flex-direction:column;gap:8px;margin-top:4px"></div>
+        <div class="chart-source">Quelle: Fiktive Daten | AMPEL_PALETTE: gruen=#1A7F1F, gelb=#FFCC00, rot=#D93C1A</div>
       </div>
 
-      <!-- Chart 4: Trend Balken -->
+      <!-- Chart 4: Trend -->
       <div class="chart-card wide">
-        <div class="chart-title">Unfallentwicklung nach Gemeindegrösse – Trend 2023 vs. Ø 2018–2022</div>
+        <div class="chart-title">Unfallentwicklung nach Gemeinde – 2024 vs. Ø 2019–2023</div>
         <div class="chart-subtitle">Kanton Zürich · Veränderung in % · Fiktive Daten</div>
         <div class="chart-legend">
-          <span class="legend-item"><span class="legend-dot" style="background:#2E7D32"></span>Abnahme (positiv)</span>
-          <span class="legend-item"><span class="legend-dot" style="background:var(--getoetet)"></span>Zunahme (negativ)</span>
-          <span class="legend-item"><span class="legend-dot" style="background:var(--grau-40)"></span>Ziel</span>
+          <span class="legend-item"><span class="legend-dot" style="background:var(--ampel-gruen)"></span>Abnahme</span>
+          <span class="legend-item"><span class="legend-dot" style="background:var(--ampel-rot)"></span>Zunahme</span>
+          <span class="legend-item"><span class="legend-dot" style="background:var(--black40);width:22px;height:2px;border-radius:0"></span>Zielwert −10 %</span>
         </div>
         <div class="chart-wrapper" style="height:200px">
           <canvas id="chartTrend"></canvas>
         </div>
-        <div class="chart-source">Quelle: Fiktive Daten | FaSi ZH Viz v2.4.0</div>
+        <div class="chart-source">Quelle: Fiktive Daten | FaSi ZH Viz v2.6.0</div>
       </div>
 
     </div>
   </section>
 
-  <!-- ==========================================
+  <!-- ============================================================
        SECTION 3: FARBEN
-       ========================================== -->
+       ============================================================ -->
   <section class="section">
     <div class="section-label">Farbpaletten (aus tokens.json)</div>
 
-    <h3 style="font-size:var(--fs-base);font-weight:600;margin-bottom:.5rem">FaSi Unfallschwere-Palette</h3>
-    <p class="section-desc">Kernpalette für alle Unfallschwerendarstellungen. Reihenfolge ist semantisch: leicht → schwer → tödlich.</p>
+    <!-- 3a: Unfallschwere (5 Stufen) -->
+    <h3 style="font-size:var(--fs-base);font-weight:600;margin-bottom:.4rem">
+      FaSi Unfallschwere-Palette
+      <span class="new-badge">+2 v2.6.0</span>
+    </h3>
+    <p class="section-desc">5-stufige Palette nach SN 641 724 / ASTRA-Standard. Neu: <code>sachschaden</code> und <code>unbekannt</code>.</p>
 
-    <div class="palette-unfallschwere" style="margin-bottom:2rem">
+    <div class="ufp-row">
+      <div class="ufp ufp-sachschaden">
+        <div class="ufp-label">Sachschaden</div>
+        <div class="ufp-name">Blau ZH</div>
+        <div class="ufp-hex">#0076BD</div>
+        <div class="ufp-wcag">Nur Personenschaden</div>
+      </div>
       <div class="ufp ufp-leicht">
         <div class="ufp-label">Leichtverletzte</div>
         <div class="ufp-name">Gelb ZH</div>
         <div class="ufp-hex">#FFCC00</div>
-        <div class="ufp-wcag">WCAG: Nur mit dunklem Text · Nicht für Fliesstext</div>
+        <div class="ufp-wcag">Nur mit dunklem Text</div>
       </div>
       <div class="ufp ufp-schwer">
         <div class="ufp-label">Schwerverletzte</div>
         <div class="ufp-name">Orange</div>
         <div class="ufp-hex">#E87600</div>
-        <div class="ufp-wcag">WCAG: 3.1:1 auf Weiss · OK für Infografiken</div>
+        <div class="ufp-wcag">3.1:1 auf Weiss ✓</div>
       </div>
       <div class="ufp ufp-getoetet">
         <div class="ufp-label">Getötete</div>
         <div class="ufp-name">Dunkelrot</div>
         <div class="ufp-hex">#B31523</div>
-        <div class="ufp-wcag">WCAG: 5.2:1 auf Weiss · AA konform</div>
+        <div class="ufp-wcag">5.2:1 auf Weiss ✓</div>
+      </div>
+      <div class="ufp ufp-unbekannt">
+        <div class="ufp-label">Unbekannt</div>
+        <div class="ufp-name">Grau 40 ZH</div>
+        <div class="ufp-hex">#949494</div>
+        <div class="ufp-wcag">Fehlende Daten</div>
       </div>
     </div>
 
-    <h3 style="font-size:var(--fs-base);font-weight:600;margin-bottom:.5rem">Akzentfarben (Webfarben)</h3>
-    <p class="section-desc">Alle aus statistikZH/leu Figma-Tokens. Primärquelle: CD Manual 2025 RGB-Werte.</p>
+    <!-- 3b: Ampel-Palette -->
+    <h3 style="font-size:var(--fs-base);font-weight:600;margin-bottom:.4rem">
+      Ampel-Palette (AMPEL_PALETTE)
+      <span class="new-badge">NEU v2.6.0</span>
+    </h3>
+    <p class="section-desc">Quartilbasiertes Monitoring: Grün &lt; Q25 / Gelb Q25–Q75 / Rot &gt; Q75 / Grau = keine Daten.</p>
+
+    <div class="ampel-row">
+      <div class="ampel-card ampel-bg-gruen">
+        <div class="ampel-dot" style="background:var(--ampel-gruen)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </div>
+        <div class="ampel-label" style="color:var(--ampel-gruen)">Grün</div>
+        <div class="ampel-cond">Wert &lt; Q25</div>
+        <div class="ampel-hex">#1A7F1F</div>
+      </div>
+      <div class="ampel-card ampel-bg-gelb">
+        <div class="ampel-dot" style="background:var(--ampel-gelb)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#333"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        </div>
+        <div class="ampel-label" style="color:#7A6000">Gelb</div>
+        <div class="ampel-cond">Q25 – Q75</div>
+        <div class="ampel-hex">#FFCC00</div>
+      </div>
+      <div class="ampel-card ampel-bg-rot">
+        <div class="ampel-dot" style="background:var(--ampel-rot)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        </div>
+        <div class="ampel-label" style="color:var(--ampel-rot)">Rot</div>
+        <div class="ampel-cond">Wert &gt; Q75</div>
+        <div class="ampel-hex">#D93C1A</div>
+      </div>
+      <div class="ampel-card ampel-bg-grau">
+        <div class="ampel-dot" style="background:var(--ampel-grau)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        </div>
+        <div class="ampel-label" style="color:var(--black60)">Grau</div>
+        <div class="ampel-cond">Keine Daten</div>
+        <div class="ampel-hex">#949494</div>
+      </div>
+    </div>
+
+    <!-- 3c: Soft-Farben inkl. neu -->
+    <h3 style="font-size:var(--fs-base);font-weight:600;margin-bottom:.4rem">
+      Soft-Akzentfarben (accent_soft)
+      <span class="new-badge">+2 v2.6.0</span>
+    </h3>
+    <p class="section-desc">Helle Pastell-Hintergründe. Neu: <code>softgelb</code> (#FFF5CC) und <code>softalarmrot</code> (#FFD5CC) für Gauge-Zonen.</p>
+
+    <div class="soft-row" style="margin-bottom:1.5rem">
+      <div class="soft-swatch" style="background:#EDF5FA"><strong>softblau</strong><span>#EDF5FA</span></div>
+      <div class="soft-swatch" style="background:#E0E8EE"><strong>blaugrau</strong><span>#E0E8EE</span></div>
+      <div class="soft-swatch" style="background:#E8F3F2"><strong>softtürkis</strong><span>#E8F3F2</span></div>
+      <div class="soft-swatch" style="background:#EBF6EB"><strong>softgrün</strong><span>#EBF6EB</span></div>
+      <div class="soft-swatch" style="background:#F6E3EA"><strong>softbordeaux</strong><span>#F6E3EA</span></div>
+      <div class="soft-swatch" style="background:#FCEDF3"><strong>softrot</strong><span>#FCEDF3</span></div>
+      <div class="soft-swatch" style="background:#ECE2F1"><strong>softviolett</strong><span>#ECE2F1</span></div>
+      <div class="soft-swatch" style="background:#F0F0F0;border:1px solid #ddd"><strong>black10</strong><span>#F0F0F0</span></div>
+      <div class="soft-swatch" style="background:#FFF5CC;border:2px solid #FFCC00"><strong>softgelb ★</strong><span>#FFF5CC</span></div>
+      <div class="soft-swatch" style="background:#FFD5CC;border:2px solid #D93C1A"><strong>softalarmrot ★</strong><span>#FFD5CC</span></div>
+    </div>
+
+    <!-- 3d: Akzentfarben -->
+    <h3 style="font-size:var(--fs-base);font-weight:600;margin-bottom:.4rem">Akzentfarben (accent)</h3>
+    <p class="section-desc">Alle aus statistikZH/leu Figma-Tokens und CD Manual 2025 RGB-Werten.</p>
 
     <div class="palette-grid">
       <div class="swatch">
-        <div class="swatch-color" style="background:var(--blau)"><span class="swatch-wcag">4.9:1</span></div>
-        <div class="swatch-info"><div class="swatch-name">Blau ZH</div><div class="swatch-hex">#0076BD</div></div>
+        <div class="swatch-color" style="background:#0076BD"><span class="swatch-wcag">4.9:1</span></div>
+        <div class="swatch-info"><div class="swatch-name">blau</div><div class="swatch-hex">#0076BD</div></div>
       </div>
       <div class="swatch">
-        <div class="swatch-color" style="background:var(--dunkelblau)"><span class="swatch-wcag">9.1:1</span></div>
-        <div class="swatch-info"><div class="swatch-name">Dunkelblau</div><div class="swatch-hex">#003F7F</div></div>
+        <div class="swatch-color" style="background:#00407C"><span class="swatch-wcag">9.1:1</span></div>
+        <div class="swatch-info"><div class="swatch-name">dunkelblau</div><div class="swatch-hex">#00407C</div></div>
       </div>
       <div class="swatch">
-        <div class="swatch-color" style="background:var(--hellblau)"><span class="swatch-wcag">2.1:1</span></div>
-        <div class="swatch-info"><div class="swatch-name">Hellblau</div><div class="swatch-hex">#5BC5F2</div></div>
+        <div class="swatch-color" style="background:#00797B"><span class="swatch-wcag">4.6:1</span></div>
+        <div class="swatch-info"><div class="swatch-name">türkis</div><div class="swatch-hex">#00797B</div></div>
       </div>
       <div class="swatch">
-        <div class="swatch-color" style="background:var(--gruen)"><span class="swatch-wcag">5.3:1</span></div>
-        <div class="swatch-info"><div class="swatch-name">Grün</div><div class="swatch-hex">#3B7B3B</div></div>
+        <div class="swatch-color" style="background:#1A7F1F"><span class="swatch-wcag">4.9:1</span></div>
+        <div class="swatch-info"><div class="swatch-name">gruen</div><div class="swatch-hex">#1A7F1F</div></div>
       </div>
       <div class="swatch">
-        <div class="swatch-color" style="background:var(--gelb)"><span class="swatch-wcag">1.2:1</span></div>
-        <div class="swatch-info"><div class="swatch-name">Gelb ZH</div><div class="swatch-hex">#FFCC00</div></div>
+        <div class="swatch-color" style="background:#B01657"><span class="swatch-wcag">5.3:1</span></div>
+        <div class="swatch-info"><div class="swatch-name">bordeaux</div><div class="swatch-hex">#B01657</div></div>
       </div>
       <div class="swatch">
-        <div class="swatch-color" style="background:var(--orange)"><span class="swatch-wcag">3.1:1</span></div>
-        <div class="swatch-info"><div class="swatch-name">Orange</div><div class="swatch-hex">#E87600</div></div>
+        <div class="swatch-color" style="background:#D40053"><span class="swatch-wcag">4.3:1</span></div>
+        <div class="swatch-info"><div class="swatch-name">magenta</div><div class="swatch-hex">#D40053</div></div>
       </div>
       <div class="swatch">
-        <div class="swatch-color" style="background:var(--rot)"><span class="swatch-wcag">5.2:1</span></div>
-        <div class="swatch-info"><div class="swatch-name">Rot</div><div class="swatch-hex">#B31523</div></div>
+        <div class="swatch-color" style="background:#7F3DA7"><span class="swatch-wcag">5.5:1</span></div>
+        <div class="swatch-info"><div class="swatch-name">violett</div><div class="swatch-hex">#7F3DA7</div></div>
       </div>
       <div class="swatch">
-        <div class="swatch-color" style="background:var(--lila)"><span class="swatch-wcag">3.5:1</span></div>
-        <div class="swatch-info"><div class="swatch-name">Lila</div><div class="swatch-hex">#9966CC</div></div>
+        <div class="swatch-color" style="background:#666666"><span class="swatch-wcag">5.9:1</span></div>
+        <div class="swatch-info"><div class="swatch-name">grau60</div><div class="swatch-hex">#666666</div></div>
       </div>
     </div>
 
-    <h3 style="font-size:var(--fs-base);font-weight:600;margin:.75rem 0 .5rem">Grautöne</h3>
+    <!-- 3e: Grautoene -->
+    <h3 style="font-size:var(--fs-base);font-weight:600;margin:.75rem 0 .4rem">Grautöne (grays)</h3>
     <div class="palette-grid">
-      <div class="swatch"><div class="swatch-color" style="background:var(--grau-10);border:1px solid #ddd"></div><div class="swatch-info"><div class="swatch-name">Schwarz 10</div><div class="swatch-hex">#E5E5E5</div></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:var(--grau-20)"></div><div class="swatch-info"><div class="swatch-name">Schwarz 20</div><div class="swatch-hex">#CCCCCC</div></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:var(--grau-40)"></div><div class="swatch-info"><div class="swatch-name">Grau 40</div><div class="swatch-hex">#999999</div></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:var(--grau-60)"><span class="swatch-wcag">5.9:1</span></div><div class="swatch-info"><div class="swatch-name">Grau 60</div><div class="swatch-hex">#666666</div></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:var(--grau-80)"><span class="swatch-wcag">11.4:1</span></div><div class="swatch-info"><div class="swatch-name">Grau 80</div><div class="swatch-hex">#333333</div></div></div>
-      <div class="swatch"><div class="swatch-color" style="background:var(--schwarz)"><span class="swatch-wcag">16.1:1</span></div><div class="swatch-info"><div class="swatch-name">Schwarz</div><div class="swatch-hex">#1A1A1A</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#F7F7F7;border:1px solid #ddd"></div><div class="swatch-info"><div class="swatch-name">black5</div><div class="swatch-hex">#F7F7F7</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#F0F0F0;border:1px solid #ddd"></div><div class="swatch-info"><div class="swatch-name">black10</div><div class="swatch-hex">#F0F0F0</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#CCCCCC"></div><div class="swatch-info"><div class="swatch-name">black20</div><div class="swatch-hex">#CCCCCC</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#949494"><span class="swatch-wcag">2.9:1</span></div><div class="swatch-info"><div class="swatch-name">black40</div><div class="swatch-hex">#949494</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#666666"><span class="swatch-wcag">5.9:1</span></div><div class="swatch-info"><div class="swatch-name">black60</div><div class="swatch-hex">#666666</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#333333"><span class="swatch-wcag">12.6:1</span></div><div class="swatch-info"><div class="swatch-name">black80</div><div class="swatch-hex">#333333</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#000000"><span class="swatch-wcag">21:1</span></div><div class="swatch-info"><div class="swatch-name">black100</div><div class="swatch-hex">#000000</div></div></div>
     </div>
+
+    <!-- 3f: Sequenzpalette (54 Farben) -->
+    <h3 style="font-size:var(--fs-base);font-weight:600;margin:.75rem 0 .4rem">
+      Sequenzpalette – 54 Farben (sequential_palette)
+      <span class="new-badge">NEU v2.6.0</span>
+    </h3>
+    <p class="section-desc">
+      Vollständige ktz_palette aus statistikZH/leu. Für Multi-Series Charts mit vielen Kategorien.
+      Hover zeigt Hex-Wert. Reihen: Satt [1–9] · Mittel [10–18] · Hell [19–27] · Pastell [28–36] · Dunkel [37–45] · Mitteldunkel [46–54].
+    </p>
+    <div class="seq-grid" id="seqGrid"></div>
+
   </section>
 
-  <!-- ==========================================
+  <!-- ============================================================
        SECTION 4: TYPOGRAFIE
-       ========================================== -->
+       ============================================================ -->
   <section class="section">
-    <div class="section-label">Typoskala (18 Stufen, Web)</div>
+    <div class="section-label">Typoskala (Web · 18 Stufen · Inter / HelveticaNow)</div>
     <h2 class="section-title">Typografie-Vorgaben</h2>
-    <p class="section-desc">Web: Inter / HelveticaNow · Office: Arial · Print: Helvetica Neue. Minimum Infografik: 12 px.</p>
+    <p class="section-desc">Web: Inter · Office: Arial · Print: Helvetica Neue. Minimum Infografik: 12 px (WCAG).</p>
 
     <div class="type-scale">
       <div class="type-row">
-        <div class="type-meta">giant · 72px · 500</div>
-        <div class="type-sample" style="font-size:72px;font-weight:500;letter-spacing:-0.03em;line-height:1">Zürich</div>
+        <div class="type-meta">giant · 72px · Black</div>
+        <div class="type-sample" style="font-size:72px;font-weight:600;letter-spacing:-0.03em;line-height:1">Zürich</div>
       </div>
       <div class="type-row">
         <div class="type-meta">3xl · 32px · 600</div>
-        <div class="type-sample" style="font-size:32px;font-weight:600;letter-spacing:-0.02em">Verkehrssicherheit 2023</div>
+        <div class="type-sample" style="font-size:32px;font-weight:600;letter-spacing:-0.02em">Verkehrssicherheit 2024</div>
       </div>
       <div class="type-row">
         <div class="type-meta">2xl · 28px · 600</div>
@@ -668,83 +659,89 @@
       </div>
       <div class="type-row">
         <div class="type-meta">base · 16px · 400</div>
-        <div class="type-sample" style="font-size:16px">Fliesstext, Legenden, Beschriftungen. Tausendertrennzeichen: Apostroph (1&#8217;234&#8217;567).</div>
+        <div class="type-sample" style="font-size:16px">Fliesstext, Legenden. Tausendertrennzeichen: Apostroph (1&#8217;234&#8217;567).</div>
       </div>
       <div class="type-row">
         <div class="type-meta">sm · 14px · 400</div>
-        <div class="type-sample" style="font-size:14px">Achsenbeschriftungen, Tooltips, Quellenangaben im Fliesstext.</div>
+        <div class="type-sample" style="font-size:14px">Achsenbeschriftungen, Tooltips, Quellenangaben.</div>
       </div>
       <div class="type-row" style="border: 2px solid var(--blau)">
         <div class="type-meta" style="color:var(--blau);font-weight:700">MIN · 12px · 400</div>
-        <div class="type-sample" style="font-size:12px">Minimum für Infografiken (WCAG). Achsenwerte, Datenlabels, Quellenzeile: «Quelle: Statistisches Amt (Stand 01.01.2024)»</div>
+        <div class="type-sample" style="font-size:12px">Minimum für Infografiken (WCAG). Achsenwerte, Datenlabels, Quellenzeile: «Quelle: Statistisches Amt (Stand 01.01.2025)»</div>
       </div>
     </div>
   </section>
 
-  <!-- ==========================================
-       SECTION 5: VERKEHRSTEILNEHMER TABELLE
-       ========================================== -->
+  <!-- ============================================================
+       SECTION 5: TABELLE
+       ============================================================ -->
   <section class="section">
     <div class="section-label">Tabellenformat (Schweizer Norm)</div>
     <div class="infografik-box">
-      <div class="infografik-title">Verunfallte nach Verkehrsteilnehmergruppe – Kanton Zürich 2023</div>
+      <div class="infografik-title">Verunfallte nach Verkehrsteilnehmergruppe – Kanton Zürich 2024</div>
       <div class="infografik-untertitel">Tausendertrennzeichen: Apostroph · Dezimaltrenner: Komma · Alle Zahlen fiktiv</div>
       <table>
         <thead>
           <tr>
             <th>Verkehrsteilnehmer</th>
-            <th style="text-align:right">Leichtverletzte</th>
-            <th style="text-align:right">Schwerverletzte</th>
+            <th style="text-align:right">Sach&shy;schaden</th>
+            <th style="text-align:right">Leicht&shy;verletzt</th>
+            <th style="text-align:right">Schwer&shy;verletzt</th>
             <th style="text-align:right">Getötete</th>
             <th style="text-align:right">Anteil %</th>
-            <th>Trend</th>
+            <th>Ampel</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><span class="vt-color-dot" style="background:#4A90D9"></span>Personenwagen (PKW)</td>
-            <td class="anzahl">748</td><td class="anzahl">124</td><td class="anzahl">8</td><td class="anzahl">40,5</td>
-            <td><span class="trend-chip" style="background:#E8F5E9;color:#2E7D32">▼ −5 %</span></td>
+            <td><span class="vt-dot" style="background:#0076BD"></span>Personenwagen (PKW)</td>
+            <td class="anzahl">1'620</td><td class="anzahl">748</td><td class="anzahl">124</td><td class="anzahl">8</td><td class="anzahl">40,5</td>
+            <td><span class="trend-chip" style="background:var(--softgruen);color:var(--ampel-gruen)">● Grün</span></td>
           </tr>
           <tr>
-            <td><span class="vt-color-dot" style="background:#FF8C00"></span>Motorrad</td>
-            <td class="anzahl">312</td><td class="anzahl">89</td><td class="anzahl">6</td><td class="anzahl">22,0</td>
-            <td><span class="trend-chip" style="background:#FFF3E0;color:#E65100">▲ +3 %</span></td>
+            <td><span class="vt-dot" style="background:#E87600"></span>Motorrad</td>
+            <td class="anzahl">420</td><td class="anzahl">312</td><td class="anzahl">89</td><td class="anzahl">6</td><td class="anzahl">22,0</td>
+            <td><span class="trend-chip" style="background:var(--softalarmrot);color:var(--ampel-rot)">● Rot</span></td>
           </tr>
           <tr>
-            <td><span class="vt-color-dot" style="background:#66BB6A"></span>Velo / E-Bike</td>
-            <td class="anzahl">389</td><td class="anzahl">52</td><td class="anzahl">3</td><td class="anzahl">21,6</td>
-            <td><span class="trend-chip" style="background:#E8F5E9;color:#2E7D32">▼ −2 %</span></td>
+            <td><span class="vt-dot" style="background:#1A7F1F"></span>Velo / E-Bike</td>
+            <td class="anzahl">310</td><td class="anzahl">389</td><td class="anzahl">52</td><td class="anzahl">3</td><td class="anzahl">21,6</td>
+            <td><span class="trend-chip" style="background:var(--softgelb);color:#7A6000">● Gelb</span></td>
           </tr>
           <tr>
-            <td><span class="vt-color-dot" style="background:#9966CC"></span>Fussgänger/-innen</td>
-            <td class="anzahl">278</td><td class="anzahl">29</td><td class="anzahl">3</td><td class="anzahl">14,8</td>
-            <td><span class="trend-chip" style="background:#E8F5E9;color:#2E7D32">▼ −8 %</span></td>
+            <td><span class="vt-dot" style="background:#7F3DA7"></span>Fussgänger/-innen</td>
+            <td class="anzahl">180</td><td class="anzahl">278</td><td class="anzahl">29</td><td class="anzahl">3</td><td class="anzahl">14,8</td>
+            <td><span class="trend-chip" style="background:var(--softgruen);color:var(--ampel-gruen)">● Grün</span></td>
           </tr>
           <tr>
-            <td><span class="vt-color-dot" style="background:#78909C"></span>LKW / Bus</td>
-            <td class="anzahl">98</td><td class="anzahl">7</td><td class="anzahl">1</td><td class="anzahl">5,0</td>
-            <td><span class="trend-chip" style="background:#F5F5F5;color:#666">→ 0 %</span></td>
+            <td><span class="vt-dot" style="background:#666666"></span>LKW / Bus</td>
+            <td class="anzahl">98</td><td class="anzahl">98</td><td class="anzahl">7</td><td class="anzahl">1</td><td class="anzahl">5,0</td>
+            <td><span class="trend-chip" style="background:var(--softgelb);color:#7A6000">● Gelb</span></td>
           </tr>
           <tr>
-            <td><span class="vt-color-dot" style="background:#E91E63"></span>E-Scooter</td>
-            <td class="anzahl">20</td><td class="anzahl">0</td><td class="anzahl">0</td><td class="anzahl">1,1</td>
-            <td><span class="trend-chip" style="background:#FCE4EC;color:#B31523">▲ +40 %</span></td>
+            <td><span class="vt-dot" style="background:#FFCC00;border:1px solid #ccc"></span>E-Scooter</td>
+            <td class="anzahl">45</td><td class="anzahl">20</td><td class="anzahl">0</td><td class="anzahl">0</td><td class="anzahl">1,1</td>
+            <td><span class="trend-chip" style="background:var(--softalarmrot);color:var(--ampel-rot)">● Rot</span></td>
           </tr>
-          <tr style="font-weight:600;background:#F9F9F9">
+          <tr>
+            <td><span class="vt-dot" style="background:var(--unbekannt)"></span>Schwere unbekannt</td>
+            <td class="anzahl">—</td><td class="anzahl">56</td><td class="anzahl">—</td><td class="anzahl">—</td><td class="anzahl">—</td>
+            <td><span class="trend-chip" style="background:var(--black10);color:var(--black60)">● Grau</span></td>
+          </tr>
+          <tr style="font-weight:600;background:var(--black5)">
             <td>Total</td>
-            <td class="anzahl">1'845</td><td class="anzahl">301</td><td class="anzahl">21</td><td class="anzahl">100,0</td>
-            <td><span class="trend-chip" style="background:#E8F5E9;color:#2E7D32">▼ −3 %</span></td>
+            <td class="anzahl">2'673</td><td class="anzahl">1'901</td><td class="anzahl">301</td><td class="anzahl">21</td><td class="anzahl">100,0</td>
+            <td></td>
           </tr>
         </tbody>
       </table>
-      <div class="chart-source">Quelle: Fiktive Musterdaten (FaSi ZH Viz v2.4.0) | Stand: 2024</div>
+      <div class="chart-source">Quelle: Fiktive Musterdaten (FaSi ZH Viz v2.6.0) | Stand: 2025</div>
     </div>
   </section>
 
-  <!-- ==========================================
+  <!-- ============================================================
        SECTION 6: TEXTFORMATIERUNG
-       ========================================== -->
+       ============================================================ -->
   <section class="section">
     <div class="section-label">Textformatierung CH-Norm</div>
     <div class="infografik-box">
@@ -760,8 +757,10 @@
           <tr><td><code>quote_primary()</code></td><td>Text</td><td>«Text»</td><td>Guillemets · primäre Anführung</td></tr>
           <tr><td><code>quote_secondary()</code></td><td>Text</td><td>‹Text›</td><td>Guillemets · sekundäre Anführung</td></tr>
           <tr><td><code>paarform()</code></td><td>Mitarbeiter</td><td>Mitarbeiterinnen und Mitarbeiter</td><td>BK-Leitfaden 3. Aufl.</td></tr>
-          <tr><td><code>format_date_ch()</code></td><td>2026-03-15</td><td>15.03.2026</td><td>Schweizer Datumsformat</td></tr>
-          <tr><td><code>build_source_line()</code></td><td>Stat. Amt</td><td>Quelle: Statistisches Amt (Stand 01.01.2024)</td><td>Pflichtangabe unter jeder Grafik</td></tr>
+          <tr><td><code>format_date_ch()</code></td><td>2026-03-17</td><td>17.03.2026</td><td>Schweizer Datumsformat</td></tr>
+          <tr><td><code>build_source_line()</code></td><td>Stat. Amt</td><td>Quelle: Statistisches Amt (Stand 17.03.2026)</td><td>Pflichtangabe unter jeder Grafik</td></tr>
+          <tr><td><code>get_ampel_color()</code></td><td>"rot"</td><td>#D93C1A</td><td>NEU v2.6.0 – Ampel-Schnellzugriff</td></tr>
+          <tr><td><code>get_unfallschwere_color()</code></td><td>"sachschaden"</td><td>#0076BD</td><td>NEU v2.6.0 – 5 Schweregrade</td></tr>
         </tbody>
       </table>
     </div>
@@ -769,71 +768,118 @@
 
 </div><!-- /container -->
 
-<!-- ==========================================
-     FOOTER (CD Manual S.23)
-     ========================================== -->
+<!-- FOOTER -->
 <footer class="page-footer" role="contentinfo">
   <div>
     <strong>Fachstelle Verkehrssicherheit FaSi</strong> · Tiefbauamt · Baudirektion · Kanton Zürich
   </div>
   <div>
-    <a href="https://www.zh.ch/verkehrssicherheit">www.zh.ch/verkehrssicherheit</a>
+    <a href="https://www.zh.ch/de/mobilitaet/strassenverkehr/strassenverkehrssicherheit.html">www.zh.ch/verkehrssicherheit</a>
     &nbsp;·&nbsp;
-    FaSi ZH Viz v2.4.0 · MIT License
+    FaSi ZH Viz v2.6.0 · MIT License
   </div>
 </footer>
 
-<!-- ==========================================
-     CHART.JS INITIALISIERUNG
-     ========================================== -->
+<!-- CHART.JS + SEQUENZPALETTE JS -->
 <script>
-// ── Farbkonstanten aus tokens.json ───────────────────────────────────────────
+// ── Farbkonstanten (direkt aus tokens.json) ────────────────────────────────
 const C = {
-  leicht:     '#FFCC00',
-  schwer:     '#E87600',
-  getoetet:   '#B31523',
-  blau:       '#0076BD',
-  dunkelblau: '#003F7F',
-  gruen:      '#2E7D32',
-  grau:       '#999999',
-  grau80:     '#333333',
-  lila:       '#9966CC',
-  grau10:     '#E5E5E5',
+  sachschaden: '#0076BD',
+  leicht:      '#FFCC00',
+  schwer:      '#E87600',
+  getoetet:    '#B31523',
+  unbekannt:   '#949494',
+  ampelGruen:  '#1A7F1F',
+  ampelGelb:   '#FFCC00',
+  ampelRot:    '#D93C1A',
+  ampelGrau:   '#949494',
+  blau:        '#0076BD',
+  dunkelblau:  '#00407C',
+  tuerkis:     '#00797B',
+  gruen:       '#1A7F1F',
+  violett:     '#7F3DA7',
+  orange:      '#DC7700',
+  bordeaux:    '#B01657',
+  grau:        '#949494',
+  grau40:      '#949494',
+  grau60:      '#666666',
+  grau10:      '#F0F0F0',
+  grau5:       '#F7F7F7',
+  softGelb:    '#FFF5CC',
+  softAlarm:   '#FFD5CC',
+  softGruen:   '#EBF6EB',
 };
 
-// Gemeinsame Chart-Defaults
+// ── Sequenzpalette (54 Farben) ─────────────────────────────────────────────
+const SEQ = [
+  '#009EE0','#FFCC00','#3EA743','#E2001A','#0076E0','#EB690B','#00A1A3','#885EA0','#E30059',
+  '#53CCFF','#FFE066','#84D188','#FF5568','#53AEFF','#F8A468','#2FFCFF','#B89EC6','#E15598',
+  '#8DDDFF','#FFEB99','#ADE1AF','#FF8D9A','#8DC9FF','#FAC29A','#74FDFF','#CFBED9','#E18EBA',
+  '#C6EEFF','#FFF5CC','#D6F0D7','#FFC6CD','#C6E4FF','#FDE1CD','#BAFEFF','#E7DFEC','#FFC6DD',
+  '#004F70','#7F6600','#1F5322','#71000C','#003B70','#753506','#005152','#444F70','#72002C',
+  '#0076A8','#BF9900','#2E7D32','#A90013','#0059A8','#B04F08','#00797A','#664678','#AA0043',
+];
+
+// Sequenzpalette rendern
+const grid = document.getElementById('seqGrid');
+SEQ.forEach((hex, i) => {
+  const div = document.createElement('div');
+  div.className = 'seq-swatch';
+  div.style.background = hex;
+  div.setAttribute('data-hex', hex);
+  div.setAttribute('title', `[${i+1}] ${hex}`);
+  // Dunkle Farben (Index 36+) brauchen hellen Text
+  const isDark = i >= 36;
+  div.innerHTML = `<span class="seq-idx" style="color:${isDark?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.3)'}">${i+1}</span>`;
+  grid.appendChild(div);
+});
+
+// ── Chart-Defaults ─────────────────────────────────────────────────────────
 Chart.defaults.font.family = "'Inter', Arial, sans-serif";
 Chart.defaults.font.size   = 12;
 Chart.defaults.color       = '#666666';
 Chart.defaults.plugins.legend.display = false;
 
-// ── Chart 1: Zeitreihe Unfallschwere ─────────────────────────────────────────
+// ── Chart 1: Zeitreihe Unfallschwere (5 Serien) ───────────────────────────
 new Chart(document.getElementById('chartZeitreihe'), {
   type: 'line',
   data: {
-    labels: ['2014','2015','2016','2017','2018','2019','2020','2021','2022','2023'],
+    labels: ['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024'],
     datasets: [
       {
+        label: 'Sachschaden',
+        data: [4800,4650,4500,4350,4200,3900,4050,4150,4170,4012],
+        borderColor: C.sachschaden, backgroundColor: C.sachschaden+'18',
+        borderWidth: 2.5, pointRadius: 3, pointBackgroundColor: C.sachschaden,
+        tension: 0.3, fill: false,
+      },
+      {
         label: 'Leichtverletzte',
-        data: [2120, 2080, 2015, 1960, 1890, 1823, 1654, 1712, 1798, 1845],
-        borderColor: C.leicht, backgroundColor: C.leicht + '22',
-        borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: C.leicht,
+        data: [2120,2080,2015,1960,1890,1654,1712,1798,1820,1845],
+        borderColor: C.leicht, backgroundColor: C.leicht+'22',
+        borderWidth: 2.5, pointRadius: 3, pointBackgroundColor: C.leicht,
         tension: 0.3, fill: false,
       },
       {
         label: 'Schwerverletzte',
-        data: [420, 405, 390, 375, 360, 342, 298, 315, 328, 301],
-        borderColor: C.schwer, backgroundColor: C.schwer + '22',
-        borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: C.schwer,
+        data: [420,405,390,375,360,298,315,328,328,301],
+        borderColor: C.schwer, backgroundColor: C.schwer+'22',
+        borderWidth: 2.5, pointRadius: 3, pointBackgroundColor: C.schwer,
         tension: 0.3, fill: false,
       },
       {
         label: 'Getötete (×10)',
-        data: [360, 310, 290, 280, 240, 280, 220, 240, 190, 210],
-        borderColor: C.getoetet, backgroundColor: C.getoetet + '22',
-        borderWidth: 2, pointRadius: 4, pointBackgroundColor: C.getoetet,
-        tension: 0.3, fill: false,
-        borderDash: [4, 3],
+        data: [310,290,280,240,280,220,240,190,230,210],
+        borderColor: C.getoetet, backgroundColor: C.getoetet+'22',
+        borderWidth: 2, pointRadius: 3, pointBackgroundColor: C.getoetet,
+        tension: 0.3, fill: false, borderDash: [4,3],
+      },
+      {
+        label: 'Unbekannte Schwere',
+        data: [80,75,70,68,62,55,58,52,54,56],
+        borderColor: C.unbekannt, backgroundColor: C.unbekannt+'18',
+        borderWidth: 1.5, pointRadius: 3, pointBackgroundColor: C.unbekannt,
+        tension: 0.3, fill: false, borderDash: [2,3],
       },
     ],
   },
@@ -855,78 +901,63 @@ new Chart(document.getElementById('chartZeitreihe'), {
     },
     scales: {
       x: { grid: { color: C.grau10 } },
-      y: {
-        grid: { color: C.grau10 },
-        ticks: { callback: v => v.toLocaleString('de-CH') },
-      }
+      y: { grid: { color: C.grau10 }, ticks: { callback: v => v.toLocaleString('de-CH') } }
     }
   }
 });
 
-// ── Chart 2: Unfalltypen Donut ────────────────────────────────────────────────
+// ── Chart 2: Unfalltypen Donut ────────────────────────────────────────────
 new Chart(document.getElementById('chartUnfalltyp'), {
   type: 'doughnut',
   data: {
     labels: ['Auffahrunfall','Abbiegeunfall','Fussgängerunfall','Schleuderunfall','Begegnungsunfall','Übrige'],
     datasets: [{
-      data: [28, 22, 15, 12, 10, 13],
-      backgroundColor: [C.blau, C.schwer, C.lila, C.getoetet, C.gruen, C.grau],
-      borderWidth: 2,
-      borderColor: '#fff',
+      data: [28,22,15,12,10,13],
+      backgroundColor: [C.blau, C.schwer, C.violett, C.getoetet, C.gruen, C.grau],
+      borderWidth: 2, borderColor: '#fff',
     }]
   },
   options: {
-    responsive: true, maintainAspectRatio: false,
-    cutout: '60%',
+    responsive: true, maintainAspectRatio: false, cutout: '58%',
     plugins: {
       legend: {
-        display: true,
-        position: 'right',
+        display: true, position: 'right',
         labels: { font: { size: 11 }, boxWidth: 10, boxHeight: 10, padding: 10 }
       },
-      tooltip: {
-        callbacks: {
-          label: ctx => ` ${ctx.label}: ${ctx.parsed} %`
-        }
-      }
+      tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} %` } }
     }
   }
 });
 
-// ── Chart 3: Verkehrsteilnehmer Horizontal Bar ────────────────────────────────
-new Chart(document.getElementById('chartVT'), {
-  type: 'bar',
-  data: {
-    labels: ['PKW','Motorrad','Velo/E-Bike','Fussgänger/-in','LKW/Bus','E-Scooter'],
-    datasets: [{
-      label: 'Getötete',
-      data: [8, 6, 3, 3, 1, 0],
-      backgroundColor: [C.blau, C.schwer, C.gruen, C.lila, C.grau, C.getoetet],
-      borderRadius: 3,
-      borderWidth: 0,
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x} Getötete` } }
-    },
-    scales: {
-      x: {
-        grid: { color: C.grau10 },
-        ticks: { stepSize: 1, callback: v => Number.isInteger(v) ? v : '' },
-        max: 10,
-      },
-      y: { grid: { display: false } }
-    }
-  }
+// ── Ampel-Cockpit (statisch, zeigt AMPEL_PALETTE) ────────────────────────
+const ampelData = [
+  { label: 'Gesamte Unfälle',       wert: 6234, q25: 5800, q50: 6500,  q75: 7200, status: 'gruen' },
+  { label: 'Fussgänger-Unfälle',    wert: 340,  q25: 280,  q50: 330,   q75: 380,  status: 'gelb'  },
+  { label: 'Motorrad-Unfälle',      wert: 820,  q25: 600,  q50: 720,   q75: 810,  status: 'rot'   },
+  { label: 'Unbekannte Schwere',    wert: null, q25: 40,   q50: 58,    q75: 75,   status: 'grau'  },
+];
+const ampelColors = { gruen: C.ampelGruen, gelb: C.ampelGelb, rot: C.ampelRot, grau: C.ampelGrau };
+const ampelBg     = { gruen: C.softGruen,  gelb: C.softGelb,  rot: C.softAlarm, grau: '#F0F0F0' };
+const ampelText   = { gruen: C.ampelGruen, gelb: '#7A6000',   rot: C.ampelRot,  grau: '#666666' };
+
+const container = document.getElementById('ampelCockpit');
+ampelData.forEach(d => {
+  const row = document.createElement('div');
+  row.style.cssText = `
+    display:flex; align-items:center; gap:10px; padding:10px 14px;
+    border-radius:8px; background:${ampelBg[d.status]};
+    font-size:13px;
+  `;
+  const dot = `<span style="width:12px;height:12px;border-radius:50%;background:${ampelColors[d.status]};display:inline-block;flex-shrink:0"></span>`;
+  const val = d.wert !== null ? `<strong style="color:${ampelColors[d.status]}">${d.wert.toLocaleString('de-CH')}</strong>` : `<span style="color:#999">k.A.</span>`;
+  const range = `<span style="font-size:11px;color:#888;margin-left:auto">Q25=${d.q25.toLocaleString('de-CH')} · Med=${d.q50.toLocaleString('de-CH')} · Q75=${d.q75.toLocaleString('de-CH')}</span>`;
+  row.innerHTML = `${dot} <span style="flex:1">${d.label}</span> ${val} ${range}`;
+  container.appendChild(row);
 });
 
-// ── Chart 4: Trend Balken ─────────────────────────────────────────────────────
-const trendData = [-12, -8, -5, -2, 1, 4, 8, 15];
-const trendLabels = ['Zürich Stadt','Winterthur','Uster','Dübendorf','Kloten','Bülach','Dietikon','Regensdorf'];
+// ── Chart 4: Trend Balken ─────────────────────────────────────────────────
+const trendData   = [-14,-9,-6,-3,0,3,7,12,16];
+const trendLabels = ['Zürich Stadt','Winterthur','Uster','Dübendorf','Kloten','Bülach','Dietikon','Regensdorf','Opfikon'];
 new Chart(document.getElementById('chartTrend'), {
   type: 'bar',
   data: {
@@ -935,20 +966,16 @@ new Chart(document.getElementById('chartTrend'), {
       {
         label: 'Veränderung %',
         data: trendData,
-        backgroundColor: trendData.map(v => v < 0 ? C.gruen + 'CC' : C.getoetet + 'CC'),
-        borderColor: trendData.map(v => v < 0 ? C.gruen : C.getoetet),
-        borderWidth: 1,
-        borderRadius: 3,
+        backgroundColor: trendData.map(v => (v < 0 ? C.ampelGruen : C.ampelRot) + 'CC'),
+        borderColor:      trendData.map(v => v < 0 ? C.ampelGruen : C.ampelRot),
+        borderWidth: 1, borderRadius: 3,
       },
       {
         label: 'Ziel',
         data: trendLabels.map(() => -10),
         type: 'line',
-        borderColor: C.grau,
-        borderWidth: 1.5,
-        borderDash: [4, 4],
-        pointRadius: 0,
-        fill: false,
+        borderColor: C.grau40, borderWidth: 1.5, borderDash: [4,4],
+        pointRadius: 0, fill: false,
       }
     ]
   },
@@ -967,10 +994,7 @@ new Chart(document.getElementById('chartTrend'), {
     },
     scales: {
       x: { grid: { display: false } },
-      y: {
-        grid: { color: C.grau10 },
-        ticks: { callback: v => (v > 0 ? '+' : '') + v + ' %' },
-      }
+      y: { grid: { color: C.grau10 }, ticks: { callback: v => (v > 0 ? '+' : '') + v + ' %' } }
     }
   }
 });
