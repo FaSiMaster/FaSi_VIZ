@@ -1,6 +1,7 @@
 # FaSi_VIZ Farbstandard – SafetyCockpit
 
 **Erstellt:** 2026-03-17
+**Letzte Aktualisierung:** 2026-03-17 – alle offenen Punkte (Prio A–D) in SafetyCockpit umgesetzt
 **Grundlage:** Farbscan aller .R, .css, .yml Dateien in `SafetyCockpit/`
 **CD-Referenz:** Offizielle CD-Farben Kanton Zürich (7 Kernfarben)
 **Palett-Quelle:** R-Datenobjekte in `data/` (aus statistikZH/leu Designsystem)
@@ -44,7 +45,7 @@
 
 | Name | Hex | Konform |
 |------|-----|---------|
-| Blau | `#0076BD` | **KONFORM** – korrigiert auf Figma-Token `colors.accent.blau` (war `#0070B4`) |
+| Blau | `#0076BD` | **KONFORM** – korrigiert auf Figma-Token `colors.accent.blau` (war `#0070B4`) – **erledigt** |
 | Dunkelblau | `#00407C` | PRÜFEN – nahe an CD Dunkelblau `#003B6F` |
 | Türkis | `#00797B` | FaSi-intern (Infografik) |
 | Grün | `#1A7F1F` | FaSi-intern (Infografik) |
@@ -53,7 +54,7 @@
 | Violett | `#7F3DA7` | FaSi-intern (Infografik) |
 | Grau 60 | `#666666` | PRÜFEN – nächste ZH-Entsprechung: Black 60 ZH `#666666` (Grautoene) ✓ |
 
-> **WICHTIG:** `Akzentfarben[["Blau"]] = #0070B4` ist **falsch** gemäss CLAUDE.md und FaSi_VIZ-Standard. Korrekt: `#0076BD` (Figma-Token `colors.accent.blau`). Muss in der nächsten Palettenversion korrigiert werden.
+> ~~**WICHTIG:** `Akzentfarben[["Blau"]] = #0070B4` ist falsch. Korrekt: `#0076BD`.~~ **erledigt** (2026-03-17)
 
 ### B.3 AkzentfarbenSoft
 
@@ -96,7 +97,7 @@
 | Violett | `#7F3DA7` | FaSi-intern (Infografik) |
 | Hellviolett | `#9572D5` | FaSi-intern (Infografik) |
 | Cyan | `#009EE0` | FaSi-intern (Infografik) |
-| Blau | `#0076BD` | **KONFORM** – korrigiert (war `#0070B4`) |
+| Blau | `#0076BD` | **KONFORM** – korrigiert (war `#0070B4`) – **erledigt** |
 
 ### B.6 Grautoene
 
@@ -194,7 +195,7 @@ Diese Farben stammen aus Microsoft Excel-Standardpaletten und sind für die visu
 | Türkis | `#00797B` | Sekundärfarbe | FaSi-intern (leu) |
 | Grün | `#1A7F1F` | Success, Reduktion | FaSi-intern (leu) |
 
-> **Hinweis:** Der aktuelle Wert `#0070B4` in `data/Akzentfarben.rda` muss auf `#0076BD` korrigiert werden.
+> ~~Der aktuelle Wert `#0070B4` in `data/Akzentfarben.rda` muss korrigiert werden.~~ **erledigt** (2026-03-17)
 
 ### F.3 Infografik-Farben (statistikZH leu)
 
@@ -253,22 +254,27 @@ Alle 54 Farben der ktz_palette sowie die benannten Infografiken-Farben gelten al
 | FaSi-intern ohne kantonale Entsprechung | **~15** (Schwere-Farben, Ampel, Excel-Kategorien) |
 | ABWEICHUNG – nicht konform | **4** (#1f77b4, #b00020, beige, Akzentfarben Blau #0070B4) |
 
-### Empfehlungen
+### Empfehlungen / Umsetzungsstatus
 
-1. **Sofort korrigieren – Prio 1:**
-   - ~~`Akzentfarben[["Blau"]]` in `data/Akzentfarben.rda`~~ → **erledigt** (2026-03-17, `#0070B4` → `#0076BD`)
-   - `#1f77b4` in `lagebericht_utils.R` (Zeilen 61, 70) → **nicht umgesetzt** (städtischer Bericht, Farbe bleibt)
-   - `#b00020` in `safety_cockpit.R` → **nicht weiterverfolgt**
+1. **Prio A – Palettenobjekte (.rda) korrigieren:**
+   - ~~`Akzentfarben[["Blau"]]` → `#0076BD`~~ **erledigt** (2026-03-17)
+   - ~~`Infografiken[["Blau"]]` → `#0076BD`~~ **erledigt**
+   - ~~`AkzentfarbenSoft`: Softgelb + Softalarmrot ergänzen~~ **erledigt**
+   - ~~`theming.R` accordion-bg → `#F0F0F0`~~ **erledigt**
+   - ~~`gauge_plots.R`: Hardcoded Hex → Palettenreferenzen~~ **erledigt**
 
-2. **Mittelfristig – Prio 2:**
-   - Named R-CSS-Farben (`red`, `orange`, `lightgreen`, `gold`, `grey`, etc.) durch explizite Hex-Werte aus der leu-Palette ersetzen
-   - `beige` durch `#F0F0F0` ersetzen
-   - Grau-Näherungen (`#999`, `#f3f3f3`, `lightgrey`) an offizielle Grautoene angleichen
+2. **Prio B – schwere_cols harmonisieren:**
+   - ~~Named R-CSS-Farben in `theming.R` (`lightsteelblue2`, `gold`, `darkgoldenrod1`, `tomato2`, `grey50`) durch FaSi_VIZ UNFALLSCHWERE_PALETTE Hex-Werte ersetzen~~ **erledigt**
 
-3. **Zur Kenntnis – Prio 3:**
-   - Die ktz_palette/Infografiken-Farben aus dem statistikZH `leu`-Paket sind offiziell für ZH-Datenvisualisierungen vorgesehen und können weiterverwendet werden
-   - Schwere-Farben (Sachschaden/Leichtverletzt/Schwerverletzt/Getötet) sind durch ASTRA-Klassierung begründet und bleiben als FaSi-intern bestehen
-   - Excel-Kategoriefarben sind rein funktional für die Berichterstattung und werden nicht im Screen-UI verwendet
+3. **Prio C – lagebericht_utils.R Named Colors:**
+   - ~~`red`, `orange`, `lightgreen`, `lightgrey`, `beige` → ZH Hex-Äquivalente~~ **erledigt**
+
+4. **Prio D – Excel-Kategoriefarben kapobericht_mod.R:**
+   - ~~Farben mit ktz_palette alignieren~~ **erledigt**
+
+5. **Nicht umgesetzt (bewusste Entscheidung):**
+   - `#1f77b4` in `lagebericht_utils.R` → bleibt (städtischer Bericht, kein CD-Einfluss)
+   - `#b00020` in `safety_cockpit.R` → nicht weiterverfolgt
 
 ---
 
