@@ -6,6 +6,36 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [2.6.1] – 2026-04-12
+
+### Geaendert
+- Repo-Struktur aufraeumen: redundante Dateien entfernt, SafetyCockpit archiviert
+- `GITHUB_ANLEITUNG.md` entfernt (Einmal-Setup, laengst erledigt)
+- `requirements-dev.txt` entfernt (redundant zu pyproject.toml)
+- `requirements-min.txt` entfernt (redundant zu pyproject.toml)
+- `DEPLOY.md` entfernt (gehoert nicht ins Repo)
+- `SafetyCockpit/` in `_archiv/` verschoben (eigenstaendige R-Shiny-App, gehoert in eigenes Repo)
+- `_archiv/` in `.gitignore` aufgenommen
+- `SECURITY.md`: unterstuetzte Version auf 2.6.x aktualisiert
+
+---
+
+## [2.6.0] – 2026-03-28
+
+### Hinzugefuegt
+- Farb-Audit SafetyCockpit: alle R-Shiny Module auf KTZH-Farbstandard migriert
+- `AMPEL_PALETTE` in `fasi_themes.py`
+- `UNFALLSCHWERE_PALETTE` auf 5 Stufen erweitert (Sachschaden + Unbestimmt)
+- `ktz_palette` (54-Farben Sequenzpalette) in `tokens.json` als `sequential_palette`
+- `get_ampel_color()` Hilfsfunktion
+- SafetyCockpit Farbstandard-Dokumentation (`FaSi_VIZ_Farbstandard.md`)
+- Farb-Audit-Bericht als PDF
+
+### Geaendert
+- `tokens.json` meta.version auf 2.5.0 aktualisiert
+
+---
+
 ## [2.5.0] – 2026-03-15
 
 ### Sicherheit
@@ -15,7 +45,6 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 ### Hinzugefügt
 - ARIA-Attribute in `footer.py` und `responsible.py` (KZH-Barrierefreiheitsvorgaben)
 - `examples/einfuehrung.ipynb`: Einführungs-Notebook mit 4 Beispielzellen
-- `requirements-dev.txt` und `requirements-min.txt`: Dependency-Lock-Files
 - Konkrete ASTRA-Quellenbelege in `fasi_themes.py` (UTF Formular 13.004)
 
 ### Tests
@@ -124,6 +153,8 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+[2.6.1]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.6.0...v2.6.1
+[2.6.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.2.0...v2.3.0

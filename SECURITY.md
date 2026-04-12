@@ -6,8 +6,8 @@ Sicherheits-Updates werden nur für die jeweils aktuellste Version bereitgestell
 
 | Version | Unterstützt |
 |---------|-------------|
-| 2.4.x   | ✅ ja       |
-| < 2.4   | ❌ nein     |
+| 2.6.x   | ja          |
+| < 2.6   | nein        |
 
 ## Sicherheitslücke melden
 

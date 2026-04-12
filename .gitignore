@@ -81,6 +81,9 @@ dmypy.json
 # ruff
 .ruff_cache/
 
+# Archiv (lokal behalten, nicht tracken)
+_archiv/
+
 # OS
 .DS_Store
 Thumbs.db
