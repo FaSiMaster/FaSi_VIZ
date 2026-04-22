@@ -6,23 +6,38 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [Unreleased]
+
+### Hinzugefügt
+- `docs/` Ordner mit `GLOSSAR.md` (Begriffe) und `STRUKTUR.md` (Projektorganisation)
+- `docs/README.md` als Doku-Landing-Page
+
+### Geändert
+- `tokens.json` `meta.version` von `2.5.0` auf `2.6.1` synchronisiert (war 2 Releases zurück)
+- `generated_utc` auf `2026-04-22` aktualisiert
+- `test_tokens_version` dynamisch gegen `__version__` (verhindert künftige Version-Drift)
+- `CHANGELOG.md`: ASCII-Ersatzschreibungen durch echte Umlaute ersetzt (Geändert, Hinzugefügt usw.)
+- `README.md`: Test-Badge `84` → `90`, korrigierter `pip install -e`-Pfad, Link auf `docs/`
+
+---
+
 ## [2.6.1] – 2026-04-12
 
-### Geaendert
-- Repo-Struktur aufraeumen: redundante Dateien entfernt, SafetyCockpit archiviert
-- `GITHUB_ANLEITUNG.md` entfernt (Einmal-Setup, laengst erledigt)
+### Geändert
+- Repo-Struktur aufräumen: redundante Dateien entfernt, SafetyCockpit archiviert
+- `GITHUB_ANLEITUNG.md` entfernt (Einmal-Setup, längst erledigt)
 - `requirements-dev.txt` entfernt (redundant zu pyproject.toml)
 - `requirements-min.txt` entfernt (redundant zu pyproject.toml)
-- `DEPLOY.md` entfernt (gehoert nicht ins Repo)
-- `SafetyCockpit/` in `_archiv/` verschoben (eigenstaendige R-Shiny-App, gehoert in eigenes Repo)
+- `DEPLOY.md` entfernt (gehört nicht ins Repo)
+- `SafetyCockpit/` in `_archiv/` verschoben (eigenständige R-Shiny-App, gehört in eigenes Repo)
 - `_archiv/` in `.gitignore` aufgenommen
-- `SECURITY.md`: unterstuetzte Version auf 2.6.x aktualisiert
+- `SECURITY.md`: unterstützte Version auf 2.6.x aktualisiert
 
 ---
 
 ## [2.6.0] – 2026-03-28
 
-### Hinzugefuegt
+### Hinzugefügt
 - Farb-Audit SafetyCockpit: alle R-Shiny Module auf KTZH-Farbstandard migriert
 - `AMPEL_PALETTE` in `fasi_themes.py`
 - `UNFALLSCHWERE_PALETTE` auf 5 Stufen erweitert (Sachschaden + Unbestimmt)
@@ -31,7 +46,7 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 - SafetyCockpit Farbstandard-Dokumentation (`FaSi_VIZ_Farbstandard.md`)
 - Farb-Audit-Bericht als PDF
 
-### Geaendert
+### Geändert
 - `tokens.json` meta.version auf 2.5.0 aktualisiert
 
 ---

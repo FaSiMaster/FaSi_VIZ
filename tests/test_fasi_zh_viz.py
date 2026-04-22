@@ -23,8 +23,13 @@ class TestTokens:
         assert "typography" in tokens
 
     def test_tokens_version(self):
+        """tokens.json muss mit Package-Version synchron sein."""
+        import fasi_zh_viz
         tokens = load_tokens()
-        assert tokens["meta"]["version"] == "2.5.0"
+        assert tokens["meta"]["version"] == fasi_zh_viz.__version__, (
+            f"tokens.json hat {tokens['meta']['version']}, "
+            f"Package hat {fasi_zh_viz.__version__}"
+        )
 
     def test_infographics_palette_exists(self):
         tokens = load_tokens()

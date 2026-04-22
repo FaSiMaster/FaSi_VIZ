@@ -3,7 +3,7 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/FaSiMaster/FaSi_VIZ/actions/workflows/ci.yml/badge.svg)](https://github.com/FaSiMaster/FaSi_VIZ/actions)
-[![Tests](https://img.shields.io/badge/tests-84%20passed-brightgreen)](https://github.com/FaSiMaster/FaSi_VIZ/actions)
+[![Tests](https://img.shields.io/badge/tests-90%20passed-brightgreen)](https://github.com/FaSiMaster/FaSi_VIZ/actions)
 
 **Visualisierungs-Library gemäss Kanton Zürich Designsystem**
 
@@ -19,7 +19,8 @@ Oder lokal (editierbar):
 
 ```bash
 git clone https://github.com/FaSiMaster/FaSi_VIZ.git
-pip install -e "./FaSi_VIZ[dev]"
+cd FaSi_VIZ
+pip install -e ".[dev]"
 ```
 
 ## Schnellstart
@@ -205,7 +206,7 @@ ruff check src/
 mypy src/fasi_zh_viz/ --ignore-missing-imports
 ```
 
-Siehe [CONTRIBUTING.md](CONTRIBUTING.md) und [CHANGELOG.md](CHANGELOG.md).
+Siehe [CONTRIBUTING.md](CONTRIBUTING.md), [CHANGELOG.md](CHANGELOG.md) und [docs/](docs/) für Glossar und Projektstruktur.
 
 ## Sicherheit
 
