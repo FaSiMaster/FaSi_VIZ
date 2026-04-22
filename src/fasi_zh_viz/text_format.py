@@ -10,7 +10,6 @@ from dataclasses import dataclass
 from datetime import date, datetime, time
 from typing import Any, Dict, Optional, Union
 
-
 Number = Union[int, float]
 
 
@@ -60,7 +59,12 @@ def format_percent_ch(
     - value_is_fraction=True: 0.125 -> "12,5 %"
     """
     v = value * 100.0 if value_is_fraction else value
-    num = format_float_ch(v, decimals=decimals, thousands_sep=thousands_sep, decimal_sep=decimal_sep)
+    num = format_float_ch(
+        v,
+        decimals=decimals,
+        thousands_sep=thousands_sep,
+        decimal_sep=decimal_sep,
+    )
     return f"{num}{' ' if with_space else ''}%"
 
 
@@ -94,7 +98,10 @@ def lint_swiss_de_text(
     if warn_on_eszett and "ß" in text:
         issues.append(TextLintIssue(
             level="warn",
-            message="Text enthält ß. Für Schweizer Hochdeutsch in Diagrammtexten wird in der Regel ss verwendet.",
+            message=(
+                "Text enthält ß. Für Schweizer Hochdeutsch in Diagrammtexten "
+                "wird in der Regel ss verwendet."
+            ),
             data={"found": "ß"},
         ))
 
@@ -104,9 +111,16 @@ def lint_swiss_de_text(
             level="warn",
             message=(
                 "Text enthält deutsche typografische Anführungszeichen. "
-                f"Empfohlen sind Guillemets {primary_quotes[0]} {primary_quotes[1]} (bzw. {secondary_quotes[0]} {secondary_quotes[1]})."
+                f"Empfohlen sind Guillemets {primary_quotes[0]} {primary_quotes[1]} "
+                f"(bzw. {secondary_quotes[0]} {secondary_quotes[1]})."
             ),
-            data={"recommended_primary": primary_quotes, "recommended_secondary": secondary_quotes},
+            data={
+                "recommended_primary": primary_quotes,
+                "recommended_secondary": secondary_quotes,
+            },
         ))
 
-    return {"ok": not any(i.level == "error" for i in issues), "issues": [i.__dict__ for i in issues]}
+    return {
+        "ok": not any(i.level == "error" for i in issues),
+        "issues": [i.__dict__ for i in issues],
+    }

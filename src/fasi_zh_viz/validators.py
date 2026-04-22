@@ -1,6 +1,8 @@
 from dataclasses import dataclass
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
+
 from .contrast import contrast_ratio
+
 
 @dataclass
 class ValidationIssue:
@@ -8,17 +10,34 @@ class ValidationIssue:
     message: str
     data: Optional[dict] = None
 
-def validate_palette_against_background(palette: List[str], background: str, min_ratio: float = 3.0) -> Dict[str, Any]:
+
+def validate_palette_against_background(
+    palette: List[str],
+    background: str,
+    min_ratio: float = 3.0,
+) -> Dict[str, Any]:
+    """Prüft ob jede Farbe der Palette mindestens `min_ratio` Kontrast zum Hintergrund hat."""
     issues: List[ValidationIssue] = []
     for c in palette:
         ratio = contrast_ratio(c, background)
         if ratio < min_ratio:
             issues.append(ValidationIssue(
                 level="error",
-                message=f"Farbe {c} hat zu wenig Kontrast zum Hintergrund {background}: {ratio:.2f} < {min_ratio:.1f}",
-                data={"color": c, "background": background, "ratio": ratio, "min_ratio": min_ratio},
+                message=(
+                    f"Farbe {c} hat zu wenig Kontrast zum Hintergrund {background}: "
+                    f"{ratio:.2f} < {min_ratio:.1f}"
+                ),
+                data={
+                    "color": c,
+                    "background": background,
+                    "ratio": ratio,
+                    "min_ratio": min_ratio,
+                },
             ))
-    return {"ok": len([i for i in issues if i.level == "error"]) == 0, "issues": [i.__dict__ for i in issues]}
+    return {
+        "ok": len([i for i in issues if i.level == "error"]) == 0,
+        "issues": [i.__dict__ for i in issues],
+    }
 
 
 def validate_background_allowed(
@@ -48,10 +67,11 @@ def validate_palette_names_for_background(
     background: str,
     palette_by_background: Dict[str, List[str]],
 ) -> Dict[str, Any]:
-    """Prüft eine Palette (über Farbnamen) gegen die in tokens.json definierte Background-Matrix.
+    """Prüft Palette (über Farbnamen) gegen die Background-Matrix aus tokens.json.
 
-    Ziel: offizielles CD nicht 'umfärben', aber regelbasiert verhindern, dass Farben verwendet werden,
-    die auf dem gewählten Hintergrund den Mindestkontrast unterschreiten.
+    Ziel: offizielles CD nicht 'umfärben', aber regelbasiert verhindern, dass Farben
+    verwendet werden, die auf dem gewählten Hintergrund den Mindestkontrast
+    unterschreiten.
     """
     allowed = set(palette_by_background.get(background, []))
     disallowed = [n for n in palette_names if n not in allowed]
@@ -60,7 +80,10 @@ def validate_palette_names_for_background(
         "ok": ok,
         "background": background,
         "disallowed": disallowed,
-        "message": None if ok else "Einige Farben sind für diesen Hintergrund nicht freigegeben (Kontrast).",
+        "message": (
+            None if ok
+            else "Einige Farben sind für diesen Hintergrund nicht freigegeben (Kontrast)."
+        ),
     }
 
 
@@ -71,9 +94,9 @@ def warn_if_palette_not_diverse_groups(
 ) -> Dict[str, Any]:
     """Warnung, wenn (v.a. bei Farbenpaar/-trio) nur eine Farbgruppe genutzt wird.
 
-    Hintergrund: Farbenblindheit – bevorzugt Kombinationen aus unterschiedlichen Farbgruppen.
+    Hintergrund: Farbenblindheit — bevorzugt Kombinationen aus unterschiedlichen Gruppen.
     """
-    group_for = {}
+    group_for: Dict[str, str] = {}
     for g, names in palette_groups.items():
         for n in names:
             group_for[n] = g
@@ -81,32 +104,77 @@ def warn_if_palette_not_diverse_groups(
     ok = len(used_groups) >= min_distinct_groups if len(palette_names) in {2, 3} else True
     return {
         "ok": ok,
-        "used_groups": sorted(list(used_groups)),
+        "used_groups": sorted([g for g in used_groups if g is not None]),
         "n_colors": len(palette_names),
-        "message": None if ok else "Farbenpaar/-trio nutzt nur eine Farbgruppe. Für Farbenblindheit besser Gruppen mischen.",
+        "message": (
+            None if ok
+            else "Farbenpaar/-trio nutzt nur eine Farbgruppe. "
+            "Für Farbenblindheit besser Gruppen mischen."
+        ),
     }
 
 
-def warn_if_legend_not_outside(legend_is_outside: bool, prefer_outside: bool = True) -> Dict[str, Any]:
+def warn_if_legend_not_outside(
+    legend_is_outside: bool,
+    prefer_outside: bool = True,
+) -> Dict[str, Any]:
+    """Warnung, wenn Legende innerhalb der Grafikfläche platziert ist."""
     if not prefer_outside:
         return {"ok": True, "message": None}
     return {
         "ok": legend_is_outside,
-        "message": None if legend_is_outside else "Legende/Beschriftung wenn möglich ausserhalb der Visualisierung platzieren.",
+        "message": (
+            None if legend_is_outside
+            else "Legende/Beschriftung wenn möglich ausserhalb der Visualisierung platzieren."
+        ),
     }
 
-def validate_text_contrast(text_color: str, background: str, is_large_text: bool = False,
-                          min_normal: float = 4.5, min_large: float = 3.0) -> Dict[str, Any]:
+
+def validate_text_contrast(
+    text_color: str,
+    background: str,
+    is_large_text: bool = False,
+    min_normal: float = 4.5,
+    min_large: float = 3.0,
+) -> Dict[str, Any]:
+    """WCAG-AA-Kontrastprüfung für Text (4.5:1 normal, 3.0:1 gross)."""
     ratio = contrast_ratio(text_color, background)
     threshold = min_large if is_large_text else min_normal
     ok = ratio >= threshold
-    return {"ok": ok, "ratio": ratio, "threshold": threshold, "is_large_text": is_large_text,
-            "hint": None if ok else "Wenn der Farbkontrast nicht gewährleistet ist, Text mit hellem Rechteck/Kreis hinterlegen oder Farbe anpassen."}
+    return {
+        "ok": ok,
+        "ratio": ratio,
+        "threshold": threshold,
+        "is_large_text": is_large_text,
+        "hint": (
+            None if ok
+            else "Wenn der Farbkontrast nicht gewährleistet ist, Text mit hellem "
+            "Rechteck/Kreis hinterlegen oder Farbe anpassen."
+        ),
+    }
+
 
 def warn_if_too_many_categories(n_categories: int, recommended_max: int = 7) -> Dict[str, Any]:
-    return {"ok": n_categories <= recommended_max, "n_categories": n_categories, "recommended_max": recommended_max,
-            "message": None if n_categories <= recommended_max else f"Mehr als {recommended_max} Kategorien: prüfen, ob alle Kategorien nötig sind oder zusammengefasst werden können."}
+    """Warnung, wenn die Kategorienanzahl die Empfehlung überschreitet."""
+    ok = n_categories <= recommended_max
+    return {
+        "ok": ok,
+        "n_categories": n_categories,
+        "recommended_max": recommended_max,
+        "message": (
+            None if ok
+            else f"Mehr als {recommended_max} Kategorien: prüfen, ob alle Kategorien "
+            "nötig sind oder zusammengefasst werden können."
+        ),
+    }
+
 
 def validate_min_font_px(font_px: float, min_px: float = 12.0) -> Dict[str, Any]:
-    return {"ok": font_px >= min_px, "font_px": font_px, "min_px": min_px,
-            "message": None if font_px >= min_px else f"Schriftgrösse {font_px}px ist kleiner als {min_px}px."}
+    """Prüft, ob die Schriftgrösse die Mindestanforderung erfüllt."""
+    ok = font_px >= min_px
+    return {
+        "ok": ok,
+        "font_px": font_px,
+        "min_px": min_px,
+        "message": None if ok else f"Schriftgrösse {font_px}px ist kleiner als {min_px}px.",
+    }

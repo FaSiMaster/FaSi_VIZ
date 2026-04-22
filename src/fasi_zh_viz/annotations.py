@@ -66,4 +66,8 @@ def validate_alt_text(alt_text: str, max_chars: int = 150) -> Dict[str, Any]:
             data={"length": length, "max_chars": max_chars},
         ))
 
-    return {"ok": not any(i.level == "error" for i in issues), "issues": [i.__dict__ for i in issues], "length": length}
+    return {
+        "ok": not any(i.level == "error" for i in issues),
+        "issues": [i.__dict__ for i in issues],
+        "length": length,
+    }

@@ -18,7 +18,6 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional
 
-
 # ---------------------------------------------------------------------------
 # Unfallschwere-Palette (nach SN 641 724 / ASTRA-Standard)
 # Sachschaden → Leichtverletzt → Schwerverletzt → Getötet → Unbekannt

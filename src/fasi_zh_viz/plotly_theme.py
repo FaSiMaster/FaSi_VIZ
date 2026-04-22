@@ -1,12 +1,18 @@
-from typing import Dict, Any
+from typing import Any, Dict
+
 
 def plotly_template(tokens: Dict[str, Any], base_font_px: float = 12.0) -> Dict[str, Any]:
+    """Erzeugt ein Plotly-Template-Dict aus den Tokens."""
     font_family = ", ".join(tokens["typography"]["web_default_font_family"])
     bg = tokens["infographics_rules"]["background_default"]
     black = tokens["colors"]["grays"]["black100"]
     palette = list(tokens["colors"]["infographics_palette"].values())
 
-    base = max(base_font_px, float(tokens.get("typography", {}).get("note", {}).get("min_font_px_in_infographics", 12)))
+    min_px = float(
+        tokens.get("typography", {}).get("note", {}).get("min_font_px_in_infographics", 12)
+    )
+    base = max(base_font_px, min_px)
+
     return {
         "layout": {
             "font": {"family": font_family, "size": base, "color": black},
@@ -39,7 +45,14 @@ def plotly_template(tokens: Dict[str, Any], base_font_px: float = 12.0) -> Dict[
         }
     }
 
-def apply_plotly_defaults(tokens: Dict[str, Any], base_font_px: float = 12.0, template_name: str = "fasi_zh") -> None:
+
+def apply_plotly_defaults(
+    tokens: Dict[str, Any],
+    base_font_px: float = 12.0,
+    template_name: str = "fasi_zh",
+) -> None:
+    """Registriert und aktiviert das Plotly-Template unter `template_name`."""
     import plotly.io as pio
+
     pio.templates[template_name] = plotly_template(tokens, base_font_px=base_font_px)
     pio.templates.default = template_name

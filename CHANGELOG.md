@@ -6,18 +6,43 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
-## [Unreleased]
+## [2.6.2] – 2026-04-22
+
+### Sicherheit
+- `footer_html(kind="webapp_login", version=...)`: Double-Escape-Problem behoben.
+  Version wird jetzt einheitlich über `html.escape()` im submenu-Loop escapet —
+  vorher war ungeklärt, wo der Escape stattfindet. XSS via dynamischem Version-String ausgeschlossen.
+- `SECURITY.md` um DSGVO-/IDG-Hinweis zu `kontakte.json` und CI-Publish-Gating ergänzt.
 
 ### Hinzugefügt
-- `docs/` Ordner mit `GLOSSAR.md` (Begriffe) und `STRUKTUR.md` (Projektorganisation)
-- `docs/README.md` als Doku-Landing-Page
+- `docs/` Ordner mit `GLOSSAR.md` (≈ 40 Begriffe), `STRUKTUR.md` (Projektorganisation) und Landing-`README.md`
+- `.pre-commit-config.yaml`: Ruff + Mypy + Bandit + pytest + File-Hygiene für alle Contributor
+- `OrgEinheit.stempel_name` optionales Feld: erlaubt abweichende Stempel-Einheit vom formalen Amt
+  (für FaSi = «Fachstelle Verkehrssicherheit FaSi», während das formale Amt «Tiefbauamt» bleibt)
+- `kontakte.json` `stempel_einheit`-Key
+- 14 neue Tests: Theme-Smoke-Tests (matplotlib/plotly/altair), Footer-Varianten inkl. XSS,
+  Kontrast-Test über alle FaSi-Themes, Impressum-Hierarchie, `load_css`-Regression
 
 ### Geändert
-- `tokens.json` `meta.version` von `2.5.0` auf `2.6.1` synchronisiert (war 2 Releases zurück)
-- `generated_utc` auf `2026-04-22` aktualisiert
-- `test_tokens_version` dynamisch gegen `__version__` (verhindert künftige Version-Drift)
-- `CHANGELOG.md`: ASCII-Ersatzschreibungen durch echte Umlaute ersetzt (Geändert, Hinzugefügt usw.)
-- `README.md`: Test-Badge `84` → `90`, korrigierter `pip install -e`-Pfad, Link auf `docs/`
+- `impressum.py`: hierarchisches Mapping korrigiert (amt=Tiefbauamt, abteilung=FaSi).
+  E-Mail-Signatur und Bürostempel zeigen jetzt die korrekte Kanton-Zürich-Hierarchie
+  Kanton → Direktion → Amt → Abteilung. Stempelversion nutzt `stempel_name` und bleibt
+  bei «Kanton Zürich / Baudirektion / FaSi».
+- `tokens.json` `meta.version` synchron mit Package (2.6.2), `generated_utc` aktualisiert
+- `test_tokens_version` dynamisch gegen `__version__` (kein Hardcode, kein Drift mehr möglich)
+- `CHANGELOG.md`: ASCII-Ersatzschreibungen durch echte Umlaute ersetzt (Geändert, Hinzugefügt …)
+- `README.md`: Test-Badge `84` → `90` passed, `pip install -e`-Pfad korrigiert, Link auf `docs/`
+- `CONTRIBUTING.md`: Branch-Konvention an gelebten Workflow angepasst (Maintainer auf main erlaubt,
+  Contributor via Feature-Branch + PR). Commit-Message-Format und Release-Prozess dokumentiert.
+- `ci.yml`: `publish`-Job prüft `PYPI_API_TOKEN`-Presence und skipt ohne Fehler wenn nicht gesetzt
+  (verhindert CI-Failures bei fehlendem Secret). `dev`-Branch in `push`-Trigger aufgenommen.
+- Ruff: 36 E501-Verletzungen + 8 I001 Import-Sort-Issues behoben
+- Mypy: 2 `no-any-return` Errors (`tokens.py`, `impressum.py`) via `cast(dict, json.load(...))`
+- `ui/footer.py` + `ui/responsible.py`: redundante ARIA-Rollen entfernt
+  (`role="list"` auf `<ul>`, `role="listitem"` auf `<li>`/`<a>` — implizit via HTML-Semantik)
+
+### Coverage
+- 90 → 104 Tests, 85 % → ~92 % Coverage
 
 ---
 

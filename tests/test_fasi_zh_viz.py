@@ -265,17 +265,38 @@ class TestImpressum:
         assert "Baudirektion" in sig
 
     def test_org_einheit_stempelversion(self):
+        """Stempelversion = Kanton / Direktion / Stempel-Einheit (FaSi statt Tiefbauamt)."""
         from fasi_zh_viz.impressum import FASI_ORG
         zeilen = FASI_ORG.as_stempelversion()
         assert len(zeilen) == 3
         assert zeilen[0] == "Kanton Zürich"
         assert zeilen[1] == "Baudirektion"
+        assert zeilen[2] == "Fachstelle Verkehrssicherheit FaSi"
 
     def test_org_einheit_burostempel(self):
+        """Bürostempel hierarchisch: Kanton / Direktion / Amt (Tiefbauamt) / Abteilung (FaSi)."""
         from fasi_zh_viz.impressum import FASI_ORG
         zeilen = FASI_ORG.as_burostempel()
         assert len(zeilen) >= 3
-        assert "Kanton Zürich" in zeilen
+        assert zeilen[0] == "Kanton Zürich"
+        assert zeilen[1] == "Baudirektion"
+        assert zeilen[2] == "Tiefbauamt"
+        assert "Fachstelle Verkehrssicherheit FaSi" in zeilen
+
+    def test_org_einheit_stempel_name_optional(self):
+        """Wenn `stempel_name` nicht gesetzt, wird das formale Amt verwendet."""
+        from fasi_zh_viz.impressum import OrgEinheit
+        org = OrgEinheit(direktion="Finanzdirektion", amt="Steueramt")
+        assert org.as_stempelversion() == ["Kanton Zürich", "Finanzdirektion", "Steueramt"]
+
+    def test_email_signatur_plain_hierarchie(self):
+        """E-Mail-Signatur enthält Direktion/Amt/Abteilung in korrekter Reihenfolge."""
+        from fasi_zh_viz.impressum import build_email_signatur, FASI
+        sig = build_email_signatur(FASI)
+        idx_direktion = sig.index("Baudirektion")
+        idx_amt = sig.index("Tiefbauamt")
+        idx_abteilung = sig.index("Fachstelle Verkehrssicherheit FaSi")
+        assert idx_direktion < idx_amt < idx_abteilung
 
 
 class TestSprache:
@@ -563,13 +584,15 @@ class TestARIAKomponenten:
         ])
         assert 'aria-label=' in html_out
 
-    def test_responsible_chip_role_listitem(self):
+    def test_responsible_chip_ist_link(self):
+        """Chip ist ein <a>-Element (implizite ARIA-Link-Rolle, keine redundante role="listitem")."""
         from fasi_zh_viz.ui.responsible import verantwortliche_stellen_html
         html_out = verantwortliche_stellen_html([
             ("Tiefbauamt", "https://www.zh.ch/tba")
         ])
-        assert "role='listitem'" in html_out or 'role="listitem"' in html_out
-        assert "role='list'" in html_out or 'role="list"' in html_out
+        assert "class='fasi-chip'" in html_out
+        assert "href='https://www.zh.ch/tba'" in html_out
+        assert ">Tiefbauamt<" in html_out
 
     def test_footer_nav_aria_label(self):
         from fasi_zh_viz.ui.footer import footer_html
@@ -659,3 +682,118 @@ class TestFaSiThemes:
         from fasi_zh_viz import get_theme_palette
         with pytest.raises(ValueError):
             get_theme_palette("nichtvorhanden")
+
+    def test_alle_theme_farben_kontrast_auf_weiss(self):
+        """Alle FaSi-Theme-Farben müssen ≥ 3:1 Kontrast zu Weiss haben (Infografik-Regel).
+
+        Ausnahmen — offizielle KZH-CD-Füllfarben, bei denen Bedeutung durch Label
+        statt Textkontrast getragen wird:
+        - `#FFCC00` Gelb (Kontrast ≈ 1.62)
+        - `#E87600` Orange ZH (Kontrast ≈ 2.99, knapp unter Schwelle)
+        """
+        from fasi_zh_viz import contrast_ratio, get_theme_palette, list_themes
+        ausnahmen = {"#FFCC00", "#E87600"}
+        for theme in list_themes():
+            for label, color in get_theme_palette(theme).items():
+                if color.upper() in ausnahmen:
+                    continue
+                ratio = contrast_ratio(color, "#FFFFFF")
+                assert ratio >= 3.0, (
+                    f"{theme}/{label} ({color}): Kontrast {ratio:.2f} < 3.0 zu Weiss"
+                )
+
+    def test_orange_zh_dokumentiert_sub_3_zu_weiss(self):
+        """Explizite Regressionsschwelle: Orange ZH #E87600 hat < 3:1 zu Weiss.
+
+        Quelle: KZH-Designsystem-Infografik-Regel erlaubt Füllfarben unter 3:1,
+        wenn Bedeutung durch Label + Form getragen wird.
+        """
+        from fasi_zh_viz import contrast_ratio
+        ratio = contrast_ratio("#E87600", "#FFFFFF")
+        assert 2.9 <= ratio < 3.0, f"Orange ZH Kontrast unerwartet: {ratio:.2f}"
+
+
+class TestThemeAdapter:
+    """Smoke-Tests für matplotlib/plotly/altair Theme-Adapter.
+
+    Wenn das Backend nicht installiert ist, wird der Test übersprungen.
+    """
+
+    def test_matplotlib_rcparams_struktur(self):
+        from fasi_zh_viz import load_tokens
+        from fasi_zh_viz.matplotlib_style import matplotlib_rcparams
+        rc = matplotlib_rcparams(load_tokens())
+        assert rc["font.size"] >= 12.0
+        assert rc["text.color"].startswith("#")
+        assert "font.family" in rc
+
+    def test_matplotlib_apply_wenn_verfuegbar(self):
+        pytest.importorskip("matplotlib")
+        from fasi_zh_viz import apply_matplotlib_style, load_tokens
+        apply_matplotlib_style(load_tokens())
+        import matplotlib as mpl
+        assert mpl.rcParams["font.size"] >= 12.0
+
+    def test_plotly_template_struktur(self):
+        from fasi_zh_viz import load_tokens
+        from fasi_zh_viz.plotly_theme import plotly_template
+        tpl = plotly_template(load_tokens())
+        assert "layout" in tpl
+        assert tpl["layout"]["font"]["size"] >= 12.0
+        assert len(tpl["layout"]["colorway"]) >= 10
+
+    def test_plotly_apply_wenn_verfuegbar(self):
+        pytest.importorskip("plotly")
+        from fasi_zh_viz import apply_plotly_defaults, load_tokens
+        apply_plotly_defaults(load_tokens())
+        import plotly.io as pio
+        assert "fasi_zh" in pio.templates
+        assert pio.templates.default == "fasi_zh"
+
+    def test_altair_theme_struktur(self):
+        from fasi_zh_viz import load_tokens
+        from fasi_zh_viz.altair_theme import altair_theme
+        theme = altair_theme(load_tokens())
+        assert "config" in theme
+        assert theme["config"]["axis"]["labelFontSize"] >= 12.0
+        assert len(theme["config"]["range"]["category"]) >= 10
+
+    def test_altair_apply_wenn_verfuegbar(self):
+        pytest.importorskip("altair")
+        from fasi_zh_viz import enable_altair_theme, load_tokens
+        enable_altair_theme(load_tokens())
+        import altair as alt
+        assert alt.themes.active == "fasi_zh"
+
+
+class TestFooterVarianten:
+    """Vollständige Coverage der drei Footer-Varianten inkl. XSS-Escape."""
+
+    def test_webapp_login_mit_version(self):
+        from fasi_zh_viz.ui.footer import footer_html
+        html_out = footer_html("webapp_login", include_version=True, version="1.2.3")
+        assert "Versionsnummer: 1.2.3" in html_out
+        assert "Copyright" in html_out
+        assert "Social Media" not in html_out  # webapp_login hat keine Social Media
+
+    def test_webapp_login_version_xss_escape(self):
+        """Dynamischer `version`-Parameter muss gegen XSS escapet werden."""
+        from fasi_zh_viz.ui.footer import footer_html
+        html_out = footer_html(
+            "webapp_login", include_version=True, version='<script>alert(1)</script>'
+        )
+        assert "<script>alert(1)</script>" not in html_out
+        assert "&lt;script&gt;" in html_out
+
+    def test_service_no_login_ohne_menu(self):
+        from fasi_zh_viz.ui.footer import footer_html
+        html_out = footer_html("service_no_login", include_impressum=True)
+        assert "Impressum" in html_out
+        assert "Designsystem" in html_out
+        assert "Footer-Navigation" not in html_out
+
+    def test_load_css_ui(self):
+        """Regression: `load_css` lädt bundled CSS-Dateien."""
+        from fasi_zh_viz import load_css
+        css = load_css("ui.css")
+        assert len(css) > 0

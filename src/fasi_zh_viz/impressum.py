@@ -6,6 +6,24 @@ Schrift E-Mail: Arial Regular/Black, 10 pt.
 
 Kontaktdaten werden aus data/kontakte.json geladen.
 Zum Anpassen: kontakte.json editieren (kein Package-Rebuild nötig).
+
+Hierarchie im Kanton Zürich (relevant für Stempel/Signatur):
+
+    Kanton Zürich  →  Direktion  →  Amt  →  Abteilung  →  Team
+
+Beispiel:
+    Kanton Zürich  →  Baudirektion  →  Tiefbauamt  →  FaSi  →  —
+
+Stempelversion (3 Zeilen, CD Manual S.14-15):
+    Kanton Zürich / Direktion / Stempel-Einheit
+
+    Die Stempel-Einheit muss nicht zwingend das formale Amt sein. Bei der FaSi
+    wird z.B. "Fachstelle Verkehrssicherheit FaSi" im Stempel geführt, weil das
+    die sprechende Einheit in der externen Kommunikation ist. Das formale Amt
+    (Tiefbauamt) erscheint dennoch in Bürostempel und E-Mail-Signatur.
+
+Bürostempel (bis 5 Zeilen, CD Manual S.14-15):
+    Kanton Zürich / Direktion / Amt / Abteilung / Team
 """
 
 from __future__ import annotations
@@ -13,20 +31,24 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, Optional, cast
 
 
-def _load_kontakte() -> dict:
+def _load_kontakte() -> Dict[str, Any]:
     """Lädt Kontaktdaten aus data/kontakte.json."""
     data_dir = Path(__file__).parent / "data"
     kontakte_path = data_dir / "kontakte.json"
     with open(kontakte_path, encoding="utf-8") as f:
-        return json.load(f)
+        return cast(Dict[str, Any], json.load(f))
 
 
 @dataclass(frozen=True)
 class KontaktPerson:
-    """Kontaktangaben einer Person gemäss CD Manual E-Mail-Signatur-Vorlage."""
+    """Kontaktangaben einer Person gemäss CD Manual E-Mail-Signatur-Vorlage.
+
+    Die Felder entsprechen der offiziellen Kanton-Zürich-Hierarchie:
+    direktion → amt → abteilung → team.
+    """
 
     vorname: str
     nachname: str
@@ -50,22 +72,30 @@ class KontaktPerson:
 class OrgEinheit:
     """Organisationseinheit für den Absendertext (Stempelversion / Bürostempel).
 
-    Stempelversion: max. 3 Zeilen (Kanton Zürich, Direktion, Amt)
-    Bürostempel: max. 5 Zeilen (+ Abteilung, Team)
-    Quelle: CD Manual S. 14-15.
+    - Stempelversion: genau 3 Zeilen (Kanton Zürich + Direktion + Stempel-Einheit).
+      Stempel-Einheit = `stempel_name` falls gesetzt, sonst `amt`.
+    - Bürostempel: bis 5 Zeilen (Kanton + Direktion + Amt + Abteilung + Team).
+
+    Quelle: CD Manual Kanton Zürich, S. 14-15.
     """
 
     direktion: str
     amt: str
     abteilung: Optional[str] = None
     team: Optional[str] = None
+    stempel_name: Optional[str] = None
 
     def as_stempelversion(self) -> list[str]:
-        """Gibt die 3-zeilige Stempelversion zurück (Kanton Zürich + Direktion + Amt)."""
-        return ["Kanton Zürich", self.direktion, self.amt]
+        """Gibt die 3-zeilige Stempelversion zurück.
+
+        Nutzt `stempel_name` wenn gesetzt (z.B. "Fachstelle FaSi"), sonst `amt`.
+        Siehe CD Manual S.14-15.
+        """
+        einheit = self.stempel_name or self.amt
+        return ["Kanton Zürich", self.direktion, einheit]
 
     def as_burostempel(self) -> list[str]:
-        """Gibt die bis zu 5-zeilige Bürostempel-Version zurück."""
+        """Gibt die bis zu 5-zeilige Bürostempel-Version zurück (hierarchisch korrekt)."""
         zeilen = ["Kanton Zürich", self.direktion, self.amt]
         if self.abteilung:
             zeilen.append(self.abteilung)
@@ -100,19 +130,20 @@ def build_email_signatur(
 
 
 def _build_plain(person: KontaktPerson, grussformel: str) -> str:
+    """Plain-Text-Signatur, hierarchisch: Kanton → Direktion → Amt → Abteilung → Team."""
     zeilen = [
         grussformel,
         person.vollname,
         "",
         "Kanton Zürich",
         person.direktion,
+        person.amt,
     ]
     if person.abteilung:
         zeilen.append(person.abteilung)
     if person.team:
         zeilen.append(person.team)
     zeilen += [
-        person.amt,
         "",
         person.vollname,
         person.funktion,
@@ -127,12 +158,15 @@ def _build_plain(person: KontaktPerson, grussformel: str) -> str:
 
 def _build_html(person: KontaktPerson, grussformel: str) -> str:
     """HTML-Signatur mit <strong> für fett darzustellende Elemente (Arial Black)."""
-    org_zeilen_html = f"Kanton Zürich<br><strong>{person.direktion}</strong>"
+    org_zeilen_html = (
+        f"Kanton Zürich<br>"
+        f"<strong>{person.direktion}</strong><br>"
+        f"{person.amt}"
+    )
     if person.abteilung:
         org_zeilen_html += f"<br>{person.abteilung}"
     if person.team:
         org_zeilen_html += f"<br>{person.team}"
-    org_zeilen_html += f"<br>{person.amt}"
 
     return (
         f"{grussformel}<br>"
@@ -155,7 +189,7 @@ def _build_html(person: KontaktPerson, grussformel: str) -> str:
 # ---------------------------------------------------------------------------
 
 def _build_fasi() -> KontaktPerson:
-    """Baut FASI-Kontakt aus kontakte.json."""
+    """Baut FASI-Kontakt aus kontakte.json (korrektes hierarchisches Mapping)."""
     k = _load_kontakte()
     p = k["fasi"]
     org = k["fasi_org"]
@@ -164,8 +198,8 @@ def _build_fasi() -> KontaktPerson:
         nachname=p["nachname"],
         funktion=p["titel"],
         direktion=org["direktion"],
-        amt=org["abteilung"],
-        abteilung=org["amt"],
+        amt=org["amt"],
+        abteilung=org.get("abteilung"),
         team=None,
         strasse=org["adresse"],
         plz_ort=org["plz_ort"],
@@ -176,14 +210,19 @@ def _build_fasi() -> KontaktPerson:
 
 
 def _build_fasi_org() -> OrgEinheit:
-    """Baut FASI_ORG aus kontakte.json."""
+    """Baut FASI_ORG aus kontakte.json.
+
+    Stempel-Einheit = `stempel_einheit` aus kontakte.json (z.B. "FaSi"),
+    Amt = formales Amt (z.B. "Tiefbauamt") für Bürostempel und E-Mail-Signatur.
+    """
     k = _load_kontakte()
     org = k["fasi_org"]
     return OrgEinheit(
         direktion=org["direktion"],
-        amt=org["abteilung"],
-        abteilung=org["amt"],
+        amt=org["amt"],
+        abteilung=org.get("abteilung"),
         team=None,
+        stempel_name=org.get("stempel_einheit"),
     )
 
 
