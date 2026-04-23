@@ -47,9 +47,12 @@ weiteren Verlauf.
 
 Die Datei `src/fasi_zh_viz/data/kontakte.json` enthält **dienstliche** Kontaktdaten
 der Fachstelle Verkehrssicherheit (Name, dienstliche E-Mail, dienstliche
-Telefonnummer, Anschrift). Diese Angaben sind gemäss § 3 Informations- und
-Datenschutzgesetz Kanton Zürich (IDG) **öffentlich zugänglich**
-und dürfen im Repository geführt werden.
+Telefonnummer, Anschrift). Diese Angaben sind — als Teil der allgemeinen
+Informationspflicht öffentlicher Organe nach **§ 14 IDG** des Kantons Zürich
+(Informations- und Datenschutzgesetz) — **öffentlich zugänglich** und dürfen
+im Repository geführt werden. § 14 Abs. 1 IDG verpflichtet öffentliche Organe
+zur Bereitstellung von Informationen über Struktur, Zuständigkeiten und
+Ansprechmöglichkeiten.
 
 Für Fork/Anpassung durch Dritte:
 - `kontakte.example.json` als Template verwenden

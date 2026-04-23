@@ -4,9 +4,11 @@ Diese Schicht liegt ÜBER dem offiziellen Kanton Zürich CD (tokens.json).
 Die Basisfarben sind unveränderlich — hier wird nur die thematische
 Zuweisung für die Fachstelle Verkehrssicherheit (FaSi, Baudirektion ZH) definiert.
 
-Quelle Unfalltypen: ASTRA, Unfalltypenblatt (UTF),
-https://www.astra.admin.ch/astra/de/home/dokumentation/unfalldaten.html
-Klassierung nach ASTRA-Unfallaufnahmeformular Formular 13.004.
+Quelle Unfalltypen:
+  Bundesamt für Strassen ASTRA, Fachapplikation MISTRA-VU,
+  Instruktionen zum Unfallaufnahmeprotokoll (UAP), Anhang 1 «Unfalltypen»
+  (Doku-Code VU EB, Version 4.21, 6.12.2010; ab 1.1.2018 als UAP2018 in Kraft).
+  https://www.astra.admin.ch/astra/de/home/dokumentation/daten-informationsprodukte/unfalldaten/grundlagen/unfallerfassung.html
 
 Verwendung:
     from fasi_zh_viz.fasi_themes import get_theme_palette, UNFALLSCHWERE_PALETTE
@@ -19,37 +21,46 @@ from __future__ import annotations
 from typing import Dict, List, Optional
 
 # ---------------------------------------------------------------------------
-# Unfallschwere-Palette (nach SN 641 724 / ASTRA-Standard)
-# Sachschaden → Leichtverletzt → Schwerverletzt → Getötet → Unbekannt
-# Farben aus dem offiziellen KZH-Infografik-Palette und Grautoene
+# Unfallschwere-Palette
+# Klassierung nach Schwere des Personenschadens (Sachschaden → leicht → schwer → getötet).
+# Farben aus offizieller KZH-Infografik-Palette und Grautönen.
+# Hinweis: SN 641 724 («Strassenverkehrssicherheit, Unfallschwerpunkt-Management»)
+# regelt das Hotspot-Management, nicht die Schwere-Klassifikation.
 # ---------------------------------------------------------------------------
 UNFALLSCHWERE_PALETTE: Dict[str, str] = {
     "sachschaden":       "#0076BD",  # Blau ZH   — Sachschaden / nicht verletzt
     "leichtverletzte":   "#FFCC00",  # Gelb ZH   — auffällig, aber nicht alarmierend
     "schwerverletzte":   "#E87600",  # Orange ZH — erhöhte Schwere
-    "getötete":          "#B31523",  # Dunkelrot  — höchste Schwere
+    "getötete":          "#B31523",  # Dunkelrot — höchste Schwere
     "unbekannt":         "#949494",  # Grau 40 ZH — fehlender / unbekannter Wert
 }
 
 # ---------------------------------------------------------------------------
-# Unfalltypen-Palette (nach ASTRA Unfalltyp-Klassifikation)
-# Quelle: ASTRA Unfalltypenblatt (UTF), Formular 13.004
-# https://www.astra.admin.ch/astra/de/home/dokumentation/unfalldaten.html
+# Unfalltypen-Palette (nach ASTRA-Unfalltypen, UAP Anhang 1)
+# Haupt-Unfalltypengruppen 0–9 gemäss UAP Version 4.21 / UAP2018:
+#   0 Schleuder-/Selbstunfall (1–9)   5 Überqueren der Fahrbahn (50–59)
+#   1 Überholunfall / Fahrstreifen-   6 Frontalkollision (60–69)
+#     wechsel (10–19)                 7 Parkierunfall (70–79)
+#   2 Auffahrunfall (20–29)           8 Fussgängerunfall (80–89)
+#   3 Abbiegeunfall (30–39)           9 Tierunfall (90–99)
+#   4 Einbiegeunfall (40–49)         00 Andere (0)
 # ---------------------------------------------------------------------------
 UNFALLTYP_PALETTE: Dict[str, str] = {
-    "auffahrunfall":     "#0076BD",  # Blau ZH  – ASTRA UTF Typ 1: Auffahren
-    "abbiegeunfall":     "#009A8E",  # Grün/Türkis ZH – ASTRA UTF Typ 2: Abbiegen/Einmünden
-    "überholunfall":     "#6E1C81",  # Lila ZH  – ASTRA UTF Typ 3: Überholen/Spurwechsel
-    "fussgängerunfall":  "#E87600",  # Orange ZH – ASTRA UTF Typ 5: Fussgängerunfall
-    "wildunfall":        "#006400",  # Dunkelgrün – ASTRA UTF Typ 6: Tierunfall (ausserorts)
-    "selbstunfall":      "#666666",  # Grau 60  – ASTRA UTF Typ 7: Selbstunfall
+    "selbstunfall":     "#666666",  # Grau 60        — UAP-Typ 0 (Schleuder/Selbstunfall)
+    "überholunfall":    "#6E1C81",  # Lila ZH        — UAP-Typ 1 (Überholen, Fahrstreifen)
+    "auffahrunfall":    "#0076BD",  # Blau ZH        — UAP-Typ 2 (Auffahrunfall, 20–29)
+    "abbiegeunfall":    "#009A8E",  # Grün/Türkis ZH — UAP-Typ 3 (Abbiegeunfall, 30–39)
+    "einbiegeunfall":   "#1A7F1F",  # Grün 60        — UAP-Typ 4 (Einbiegeunfall, 40–49)
+    "frontalkollision": "#B31523",  # Dunkelrot      — UAP-Typ 6 (Frontalkollision, 60–69)
+    "fussgängerunfall": "#E87600",  # Orange ZH      — UAP-Typ 8 (Fussgänger, 80–89)
+    "tierunfall":       "#006400",  # Dunkelgrün     — UAP-Typ 9 (Haustier/Wild/Reiter)
 }
 
 # ---------------------------------------------------------------------------
 # Ampel-Palette (Quartil-basiertes Monitoring — SafetyCockpit-Standard)
 # Grün  = unter Q25  (besser als üblich)
-# Gelb  = Q25–Q75   (im Normalbereich)
-# Rot   = über Q75  (schlechter als üblich)
+# Gelb  = Q25–Q75    (im Normalbereich)
+# Rot   = über Q75   (schlechter als üblich)
 # Grau  = keine Daten / unbekannt
 # ---------------------------------------------------------------------------
 AMPEL_PALETTE: Dict[str, str] = {
@@ -63,45 +74,45 @@ AMPEL_PALETTE: Dict[str, str] = {
 # Trend-Palette (positive/negative Entwicklung)
 # ---------------------------------------------------------------------------
 TREND_PALETTE: Dict[str, str] = {
-    "abnahme_gut":   "#009A8E",  # Grün/Türkis — Unfälle nehmen ab = positiv
-    "zunahme_schlecht": "#B31523",  # Rot — Unfälle nehmen zu = negativ
-    "stabil":        "#666666",  # Grau 60 — keine signifikante Änderung
-    "ziel":          "#0076BD",  # Blau — Zielwert/Benchmark
+    "abnahme_gut":      "#009A8E",  # Grün/Türkis — Unfälle nehmen ab = positiv
+    "zunahme_schlecht": "#B31523",  # Rot         — Unfälle nehmen zu = negativ
+    "stabil":           "#666666",  # Grau 60     — keine signifikante Änderung
+    "ziel":             "#0076BD",  # Blau        — Zielwert/Benchmark
 }
 
 # ---------------------------------------------------------------------------
 # Verkehrsteilnehmer-Palette
 # ---------------------------------------------------------------------------
 VERKEHRSTEILNEHMER_PALETTE: Dict[str, str] = {
-    "fussgänger":    "#E87600",  # Orange ZH
-    "velo":          "#009A8E",  # Grün/Türkis ZH
-    "motorrad":      "#6E1C81",  # Lila ZH
-    "pkw":           "#0076BD",  # Blau ZH
-    "lkw_bus":       "#666666",  # Grau 60
-    "e_scooter":     "#FFCC00",  # Gelb ZH
+    "fussgänger": "#E87600",  # Orange ZH
+    "velo":       "#009A8E",  # Grün/Türkis ZH
+    "motorrad":   "#6E1C81",  # Lila ZH
+    "pkw":        "#0076BD",  # Blau ZH
+    "lkw_bus":    "#666666",  # Grau 60
+    "e_scooter":  "#FFCC00",  # Gelb ZH
 }
 
 # ---------------------------------------------------------------------------
 # Strassentyp-Palette
 # ---------------------------------------------------------------------------
 STRASSENTYP_PALETTE: Dict[str, str] = {
-    "autobahn":      "#0076BD",  # Blau ZH
-    "kantonsstrasse": "#009A8E",  # Grün/Türkis ZH
+    "autobahn":        "#0076BD",  # Blau ZH
+    "kantonsstrasse":  "#009A8E",  # Grün/Türkis ZH
     "gemeindestrasse": "#666666",  # Grau 60
-    "innerorts":     "#E87600",  # Orange ZH
-    "ausserorts":    "#6E1C81",  # Lila ZH
+    "innerorts":       "#E87600",  # Orange ZH
+    "ausserorts":      "#6E1C81",  # Lila ZH
 }
 
 # ---------------------------------------------------------------------------
 # Alle Themes zusammengefasst
 # ---------------------------------------------------------------------------
 _THEMES: Dict[str, Dict[str, str]] = {
-    "unfallschwere":        UNFALLSCHWERE_PALETTE,
-    "unfalltyp":            UNFALLTYP_PALETTE,
-    "ampel":                AMPEL_PALETTE,
-    "trend":                TREND_PALETTE,
-    "verkehrsteilnehmer":   VERKEHRSTEILNEHMER_PALETTE,
-    "strassentyp":          STRASSENTYP_PALETTE,
+    "unfallschwere":      UNFALLSCHWERE_PALETTE,
+    "unfalltyp":          UNFALLTYP_PALETTE,
+    "ampel":              AMPEL_PALETTE,
+    "trend":              TREND_PALETTE,
+    "verkehrsteilnehmer": VERKEHRSTEILNEHMER_PALETTE,
+    "strassentyp":        STRASSENTYP_PALETTE,
 }
 
 
@@ -109,13 +120,14 @@ def get_theme_palette(theme: str) -> Dict[str, str]:
     """Gibt die FaSi-Farbpalette für ein bestimmtes Thema zurück.
 
     Args:
-        theme: "unfallschwere", "unfalltyp", "trend", "verkehrsteilnehmer", "strassentyp"
+        theme: "unfallschwere", "unfalltyp", "ampel", "trend",
+               "verkehrsteilnehmer" oder "strassentyp".
 
     Returns:
-        Dict mit Label → Hex-Farbe
+        Dict mit Label → Hex-Farbe.
 
     Raises:
-        ValueError: wenn das Theme nicht bekannt ist
+        ValueError: wenn das Theme nicht bekannt ist.
     """
     if theme not in _THEMES:
         available = ", ".join(sorted(_THEMES.keys()))
@@ -143,10 +155,10 @@ def get_unfallschwere_color(schwere: str) -> Optional[str]:
 
     Args:
         schwere: "sachschaden", "leichtverletzte", "schwerverletzte",
-                 "getötete" oder "unbekannt"
+                 "getötete" oder "unbekannt".
 
     Returns:
-        Hex-Farbe oder None wenn unbekannt
+        Hex-Farbe oder None wenn unbekannt.
     """
     return UNFALLSCHWERE_PALETTE.get(schwere.lower())
 
@@ -155,9 +167,9 @@ def get_ampel_color(status: str) -> Optional[str]:
     """Schnellzugriff auf Ampel-Statusfarbe (Quartil-basiert).
 
     Args:
-        status: "gruen", "gelb", "rot" oder "grau"
+        status: "gruen", "gelb", "rot" oder "grau".
 
     Returns:
-        Hex-Farbe oder None wenn unbekannt
+        Hex-Farbe oder None wenn unbekannt.
     """
     return AMPEL_PALETTE.get(status.lower())

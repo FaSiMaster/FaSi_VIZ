@@ -1,7 +1,7 @@
 """
 FaSi ZH Viz - Visualisierungs-Library gemäss Kanton Zürich Designsystem
 
-Version: 2.6.2
+Version: 2.6.3
 
 Verwendung:
     from fasi_zh_viz import load_tokens, apply_matplotlib_style
@@ -17,7 +17,7 @@ Verwendung:
     print(build_source_line("Statistisches Amt", "21.01.2026"))
 """
 
-__version__ = "2.6.2"
+__version__ = "2.6.3"
 
 # Tokens & CSS
 from .altair_theme import altair_theme, enable_altair_theme

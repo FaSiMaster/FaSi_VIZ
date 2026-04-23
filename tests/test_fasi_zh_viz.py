@@ -702,6 +702,28 @@ class TestFaSiThemes:
                     f"{theme}/{label} ({color}): Kontrast {ratio:.2f} < 3.0 zu Weiss"
                 )
 
+    def test_unfalltyp_palette_vollstaendig(self):
+        """UAP-Haupt-Unfalltypen 0,1,2,3,4,6,8,9 müssen als Label vorhanden sein."""
+        from fasi_zh_viz import UNFALLTYP_PALETTE
+        erwartet = {
+            "selbstunfall",      # UAP 0
+            "überholunfall",     # UAP 1
+            "auffahrunfall",     # UAP 2
+            "abbiegeunfall",     # UAP 3
+            "einbiegeunfall",    # UAP 4
+            "frontalkollision",  # UAP 6
+            "fussgängerunfall",  # UAP 8
+            "tierunfall",        # UAP 9
+        }
+        assert erwartet.issubset(set(UNFALLTYP_PALETTE.keys()))
+
+    def test_unfalltyp_palette_kein_wildunfall_mehr(self):
+        """Regression: `wildunfall` wurde in `tierunfall` umbenannt (UAP Typ 9,
+        offizielle Bezeichnung inkl. Haustier/Reiter)."""
+        from fasi_zh_viz import UNFALLTYP_PALETTE
+        assert "wildunfall" not in UNFALLTYP_PALETTE
+        assert "tierunfall" in UNFALLTYP_PALETTE
+
     def test_orange_zh_dokumentiert_sub_3_zu_weiss(self):
         """Explizite Regressionsschwelle: Orange ZH #E87600 hat < 3:1 zu Weiss.
 

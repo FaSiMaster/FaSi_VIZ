@@ -118,7 +118,7 @@ FaSi_VIZ/
 |--------|-------|------------------|
 | `statistikZH/leu` (GitHub) | Web-Tokens (Farben, Typo, Breakpoints) | Manuell synchronisiert in `tokens.json` |
 | CD Manual 2025 (PDF) | Print-Tokens, Signatur-Regeln | Manuell, bei neuer Ausgabe |
-| ASTRA UTF Formular 13.004 | Unfalltypen-Klassifikation | Selten (Jahre) |
+| ASTRA UAP Anhang 1 (Doku-Code VU EB) | Unfalltypen-Klassifikation | Selten (Jahre, zuletzt UAP2018) |
 | BK-Leitfaden 3. Auflage | Sprachregeln | Selten (Jahre) |
 | WCAG 2.1 (W3C) | Kontrast-Schwellen | Stabil |
 

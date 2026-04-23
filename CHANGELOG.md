@@ -6,6 +6,58 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
+## [2.6.3] – 2026-04-23
+
+### Behoben (normative Korrekturen, gegen Original-Quellen verifiziert)
+
+- **`fasi_themes.py` UAP-Unfalltypen-Zuordnung komplett korrigiert**.
+  Die bisherige Typ-Nummerierung (Typ 1 = Auffahren, Typ 2 = Abbiegen, Typ 3 = Überholen,
+  Typ 5 = Fussgänger, Typ 6 = Tierunfall, Typ 7 = Selbstunfall) war inkorrekt.
+  Korrekte ASTRA-UAP-Haupt-Unfalltypengruppen 0–9 laut UAP Anhang 1 (Doku-Code VU EB):
+
+  | Alt (falsch) | Neu (korrekt) | Label |
+  |--------------|---------------|-------|
+  | Typ 1 | **Typ 2** | Auffahrunfall |
+  | Typ 2 | **Typ 3** | Abbiegeunfall |
+  | Typ 3 | **Typ 1** | Überholunfall |
+  | Typ 5 | **Typ 8** | Fussgängerunfall |
+  | Typ 6 | **Typ 9** | Tierunfall |
+  | Typ 7 | **Typ 0** | Selbstunfall |
+
+- **Palette erweitert** um offiziell existierende Typen: `einbiegeunfall` (UAP-Typ 4),
+  `frontalkollision` (UAP-Typ 6).
+- **Breaking (Mikro):** `wildunfall` → `tierunfall` umbenannt (offizielle ASTRA-Bezeichnung
+  umfasst Haustier/Wildtier/Reiter). Migration: `UNFALLTYP_PALETTE["tierunfall"]` statt `["wildunfall"]`.
+- **«Formular 13.004»** (existierte nicht) durch korrekten Quellenverweis ersetzt:
+  ASTRA MISTRA-VU, UAP Anhang 1 «Unfalltypen», Doku-Code VU EB, Version 4.21 (6.12.2010),
+  ab 1.1.2018 als UAP2018 in Kraft.
+- **SN 641 724**: Glossar- und Code-Kommentar korrigiert. Offizieller Titel ist
+  «Strassenverkehrssicherheit, Unfallschwerpunkt-Management» (regelt Hotspot-Analyse,
+  seit 2013 via Art. 6a SVG verbindlich) — NICHT «Klassifikation von Verkehrsunfällen
+  und Personenschaden» wie fälschlich im Glossar v2.6.2.
+- **VSS**: Akronym-Auflösung korrigiert auf «Schweizerischer Verband der Strassen- und
+  Verkehrsfachleute» (nicht «Verband Schweizer Strasseninfrastruktur-Fachleute»).
+- **SECURITY.md `§ 3 IDG`** → **`§ 14 IDG`** korrigiert. § 3 IDG regelt den Vorbehalt
+  des Verfahrensrechts, nicht die Informationspflicht. § 14 IDG ist die korrekte
+  Grundlage für die Publikation dienstlicher Kontakt-Angaben öffentlicher Organe.
+
+### Hinzugefügt
+
+- `docs/GLOSSAR.md`: Eintrag `SN 641 712` (Sicherheitsaudit) und aktualisierter
+  `SN 641 724`-Eintrag mit Verweis auf Art. 6a SVG.
+- `docs/GLOSSAR.md` `ASTRA UAP`: Historie UAP2011 → UAP2018, MISTRA-Fachapplikation.
+- 2 neue Tests: `test_unfalltyp_palette_vollstaendig`,
+  `test_unfalltyp_palette_kein_wildunfall_mehr`.
+
+### Quellen (verifiziert am 2026-04-23)
+
+- ASTRA UAP Anhang 1 (PDF, 19 S.): [Instruktionen_Unfallaufnahmeprotokoll_UAP2018_Anhang1_Unfalltypen.pdf](https://www.astra.admin.ch/dam/astra/de/dokumente/unfalldaten/publikationen/Instruktionen_Unfallaufnahmeprotokoll_UAP2018_Anhang1_Unfalltypen.pdf.download.pdf/Instruktionen_Unfallaufnahmeprotokoll_UAP2018_Anhang1_Unfalltypen.pdf)
+- ASTRA Unfallerfassung: https://www.astra.admin.ch/astra/de/home/dokumentation/daten-informationsprodukte/unfalldaten/grundlagen/unfallerfassung.html
+- SN 641 724 / Art. 6a SVG: Webrecherche VSS / ASTRA-Normenliste
+- IDG Kanton Zürich: https://www.zh.ch/de/politik-staat/gesetze-beschluesse/gesetzessammlung/zhlex-ls/erlass-170_4-2007_02_12-2008_10_01-109.html
+
+---
+
 ## [2.6.2] – 2026-04-22
 
 ### Sicherheit
