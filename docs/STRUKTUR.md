@@ -1,9 +1,9 @@
-# Projektstruktur — FaSi ZH Viz
+# Projektstruktur — roadsafety-viz
 
 Aktueller Stand: v2.6.1
 
 ```
-FaSi_VIZ/
+roadsafety-viz/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml                    ← CI: test + lint + mypy + bandit + publish
@@ -24,7 +24,7 @@ FaSi_VIZ/
 │       ├── __init__.py               ← 59 öffentliche Exports
 │       ├── data/
 │       │   ├── tokens.json           ← Single Source of Truth (Design-Tokens)
-│       │   ├── kontakte.json         ← FaSi-Kontakte (im Repo)
+│       │   ├── kontakte.json         ← Projekt-Kontaktangaben (im Repo)
 │       │   ├── kontakte.example.json ← Template für externe Nutzung
 │       │   ├── inter.css             ← Inter Webfont-Declaration
 │       │   └── ui.css                ← KZH-UI-Basis-CSS
@@ -38,7 +38,7 @@ FaSi_VIZ/
 │       ├── annotations.py            ← Quellenzeile, Caption, Alt-Text
 │       ├── impressum.py              ← E-Mail-Signatur, Stempelversion
 │       ├── sprache.py                ← Geschlechtergerechte Sprache (BK-Leitfaden)
-│       ├── fasi_themes.py            ← FaSi-Farbthemen (Verkehrssicherheit)
+│       ├── fasi_themes.py            ← Themen-Farbpaletten (Verkehrssicherheit)
 │       ├── matplotlib_style.py       ← Matplotlib rcParams
 │       ├── plotly_theme.py           ← Plotly Template
 │       └── altair_theme.py           ← Altair Theme

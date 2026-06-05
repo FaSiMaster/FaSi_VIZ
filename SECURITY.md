@@ -13,7 +13,7 @@ Sicherheits-Updates werden nur für die jeweils aktuellste Version bereitgestell
 
 Bitte melde Sicherheitslücken **nicht** als öffentliches GitHub Issue.
 
-Sende stattdessen eine E-Mail an: **stevan.skeledzic@bd.zh.ch**
+Sende stattdessen eine E-Mail an: **info@skeledzic.ch**
 
 Bitte inkludiere:
 - Beschreibung der Schwachstelle
@@ -45,18 +45,14 @@ weiteren Verlauf.
 
 ### Datenschutz — `kontakte.json`
 
-Die Datei `src/fasi_zh_viz/data/kontakte.json` enthält **dienstliche** Kontaktdaten
-der Fachstelle Verkehrssicherheit (Name, dienstliche E-Mail, dienstliche
-Telefonnummer, Anschrift). Diese Angaben sind — als Teil der allgemeinen
-Informationspflicht öffentlicher Organe nach **§ 14 IDG** des Kantons Zürich
-(Informations- und Datenschutzgesetz) — **öffentlich zugänglich** und dürfen
-im Repository geführt werden. § 14 Abs. 1 IDG verpflichtet öffentliche Organe
-zur Bereitstellung von Informationen über Struktur, Zuständigkeiten und
-Ansprechmöglichkeiten.
+Die Datei `src/fasi_zh_viz/data/kontakte.json` enthält nur neutrale, öffentlich
+nutzbare Kontaktangaben des privaten Projekts (Name und allgemeine
+Projekt-E-Mail-Adresse). Es werden **keine sensiblen oder dienstlichen
+Personendaten** im Repository geführt.
 
 Für Fork/Anpassung durch Dritte:
 - `kontakte.example.json` als Template verwenden
-- `kontakte.json` lokal mit eigenen **dienstlichen** Daten füllen
+- `kontakte.json` lokal mit eigenen Daten füllen
 - **Keine privaten Kontaktdaten** (private Mobilnummer, Privatadresse) im Repo ablegen
 - Falls gewünscht: `kontakte.json` in einer Fork-.gitignore führen und nur
   `kontakte.example.json` tracken

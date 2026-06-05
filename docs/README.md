@@ -1,4 +1,4 @@
-# Dokumentation — FaSi ZH Viz
+# Dokumentation — roadsafety-viz
 
 Diese Ordner enthält die erweiterte Dokumentation für die Library.
 

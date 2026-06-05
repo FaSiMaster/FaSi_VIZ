@@ -1,8 +1,8 @@
-"""FaSi-eigene Farbempfehlungen für Verkehrssicherheitsthemen.
+"""Themen-Farbempfehlungen für Verkehrssicherheitsvisualisierungen.
 
-Diese Schicht liegt ÜBER dem offiziellen Kanton Zürich CD (tokens.json).
-Die Basisfarben sind unveränderlich — hier wird nur die thematische
-Zuweisung für die Fachstelle Verkehrssicherheit (FaSi, Baudirektion ZH) definiert.
+Diese Schicht liegt ÜBER den Design-Tokens (tokens.json, Quelle: öffentliches
+Designsystem statistikZH/leu). Die Basisfarben sind unveränderlich — hier wird
+nur die thematische Zuweisung für Verkehrssicherheitsthemen definiert.
 
 Quelle Unfalltypen:
   Bundesamt für Strassen ASTRA, Fachapplikation MISTRA-VU,

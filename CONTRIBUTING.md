@@ -1,4 +1,4 @@
-# Mitwirken — FaSi ZH Viz
+# Mitwirken — roadsafety-viz
 
 ## Branch-Konvention
 
@@ -71,5 +71,5 @@ pre-commit install
 
 ## Fragen / Probleme
 
-Issues öffnen: https://github.com/FaSiMaster/FaSi_VIZ/issues
+Issues öffnen: https://github.com/FaSiMaster/roadsafety-viz/issues
 Sicherheitslücken: siehe [SECURITY.md](SECURITY.md).

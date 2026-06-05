@@ -29,7 +29,7 @@ def footer_html(
             f"kind muss eine von {sorted(_VALID_KINDS)} sein, erhalten: {kind!r}"
         )
 
-    sender = "Kanton Zürich"
+    sender = "roadsafety-viz"
 
     if kind == "webapp_login":
         submenu = ["Copyright"]

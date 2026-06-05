@@ -1,5 +1,6 @@
 """
-FaSi ZH Viz - Visualisierungs-Library gemäss Kanton Zürich Designsystem
+roadsafety-viz - Private Visualisierungs-Library mit Schweizer Design-Tokens
+(basierend auf dem öffentlichen statistikZH/leu-Designsystem)
 
 Version: 2.6.3
 
@@ -33,7 +34,7 @@ from .annotations import (
 # Kontrast-Berechnung
 from .contrast import contrast_ratio, relative_luminance
 
-# FaSi-eigene Farbthemen (Verkehrssicherheit)
+# Themen-Farbpaletten (Verkehrssicherheit)
 from .fasi_themes import (
     AMPEL_PALETTE,
     STRASSENTYP_PALETTE,
