@@ -1,29 +1,25 @@
-"""Impressum- und Signatur-Templates für die kantonale Kommunikation.
+"""Impressum- und Signatur-Templates für strukturierte Absenderangaben.
 
-Basiert auf dem Corporate Design Manual Kanton Zürich, Version 2025.
-E-Mail-Signatur: S. 23 des CD Manual.
-Schrift E-Mail: Arial Regular/Black, 10 pt.
+Generischer Generator für E-Mail-Signaturen und Organisations-Stempel nach
+einem mehrstufigen Hierarchie-Aufbau, wie ihn Schweizer Organisationen
+verwenden.
 
 Kontaktdaten werden aus data/kontakte.json geladen.
 Zum Anpassen: kontakte.json editieren (kein Package-Rebuild nötig).
 
-Hierarchie im Kanton Zürich (relevant für Stempel/Signatur):
+Hierarchie (relevant für Stempel/Signatur):
 
-    Kanton Zürich  →  Direktion  →  Amt  →  Abteilung  →  Team
+    Träger  →  Direktion  →  Amt  →  Abteilung  →  Team
 
-Beispiel:
-    Kanton Zürich  →  Baudirektion  →  Tiefbauamt  →  FaSi  →  —
+Stempelversion (3 Zeilen):
+    Träger / Direktion / Stempel-Einheit
 
-Stempelversion (3 Zeilen, CD Manual S.14-15):
-    Kanton Zürich / Direktion / Stempel-Einheit
+    Die Stempel-Einheit muss nicht zwingend das formale Amt sein. Leere Felder
+    (z.B. ein leerer `kanton`-Wert) werden in der Ausgabe weggelassen, sodass
+    das Modul auch für private Absender ohne amtliche Hierarchie nutzbar ist.
 
-    Die Stempel-Einheit muss nicht zwingend das formale Amt sein. Bei der FaSi
-    wird z.B. "Fachstelle Verkehrssicherheit FaSi" im Stempel geführt, weil das
-    die sprechende Einheit in der externen Kommunikation ist. Das formale Amt
-    (Tiefbauamt) erscheint dennoch in Bürostempel und E-Mail-Signatur.
-
-Bürostempel (bis 5 Zeilen, CD Manual S.14-15):
-    Kanton Zürich / Direktion / Amt / Abteilung / Team
+Bürostempel (bis 5 Zeilen):
+    Träger / Direktion / Amt / Abteilung / Team
 """
 
 from __future__ import annotations
@@ -44,10 +40,11 @@ def _load_kontakte() -> Dict[str, Any]:
 
 @dataclass(frozen=True)
 class KontaktPerson:
-    """Kontaktangaben einer Person gemäss CD Manual E-Mail-Signatur-Vorlage.
+    """Kontaktangaben einer Person für die E-Mail-Signatur-Vorlage.
 
-    Die Felder entsprechen der offiziellen Kanton-Zürich-Hierarchie:
-    direktion → amt → abteilung → team.
+    Die Felder folgen einer mehrstufigen Organisations-Hierarchie:
+    träger (kanton) → direktion → amt → abteilung → team. Leere Felder werden
+    in der Ausgabe weggelassen (auch für private Absender nutzbar).
     """
 
     vorname: str
@@ -60,6 +57,7 @@ class KontaktPerson:
     telefon: str
     email: str
     website: str
+    kanton: str = ""
     abteilung: Optional[str] = None
     team: Optional[str] = None
 
@@ -72,36 +70,36 @@ class KontaktPerson:
 class OrgEinheit:
     """Organisationseinheit für den Absendertext (Stempelversion / Bürostempel).
 
-    - Stempelversion: genau 3 Zeilen (Kanton Zürich + Direktion + Stempel-Einheit).
+    - Stempelversion: bis zu 3 Zeilen (Träger + Direktion + Stempel-Einheit).
       Stempel-Einheit = `stempel_name` falls gesetzt, sonst `amt`.
-    - Bürostempel: bis 5 Zeilen (Kanton + Direktion + Amt + Abteilung + Team).
+    - Bürostempel: bis 5 Zeilen (Träger + Direktion + Amt + Abteilung + Team).
 
-    Quelle: CD Manual Kanton Zürich, S. 14-15.
+    Leere Felder werden in der Ausgabe weggelassen.
     """
 
     direktion: str
     amt: str
+    kanton: str = "Kanton Zürich"
     abteilung: Optional[str] = None
     team: Optional[str] = None
     stempel_name: Optional[str] = None
 
     def as_stempelversion(self) -> list[str]:
-        """Gibt die 3-zeilige Stempelversion zurück.
+        """Gibt die Stempelversion zurück (Träger / Direktion / Stempel-Einheit).
 
-        Nutzt `stempel_name` wenn gesetzt (z.B. "Fachstelle FaSi"), sonst `amt`.
-        Siehe CD Manual S.14-15.
+        Nutzt `stempel_name` wenn gesetzt, sonst `amt`. Leere Zeilen entfallen.
         """
         einheit = self.stempel_name or self.amt
-        return ["Kanton Zürich", self.direktion, einheit]
+        return [z for z in [self.kanton, self.direktion, einheit] if z]
 
     def as_burostempel(self) -> list[str]:
-        """Gibt die bis zu 5-zeilige Bürostempel-Version zurück (hierarchisch korrekt)."""
-        zeilen = ["Kanton Zürich", self.direktion, self.amt]
+        """Gibt die bis zu 5-zeilige Bürostempel-Version zurück. Leere Zeilen entfallen."""
+        zeilen = [self.kanton, self.direktion, self.amt]
         if self.abteilung:
             zeilen.append(self.abteilung)
         if self.team:
             zeilen.append(self.team)
-        return zeilen
+        return [z for z in zeilen if z]
 
 
 def build_email_signatur(
@@ -109,10 +107,10 @@ def build_email_signatur(
     grussformel: str = "Freundliche Grüsse",
     plain_text: bool = True,
 ) -> str:
-    """Erzeugt eine E-Mail-Signatur gemäss CD Manual Kanton Zürich, S. 23.
+    """Erzeugt eine strukturierte E-Mail-Signatur.
 
-    Schrift: Arial Regular 10 pt.
-    Fett (Arial Black): Direktion und Name des Absenders.
+    Fett (HTML <strong>): Direktion und Name des Absenders. Leere
+    Organisationsfelder werden weggelassen.
 
     Parameters
     ----------
@@ -130,58 +128,71 @@ def build_email_signatur(
 
 
 def _build_plain(person: KontaktPerson, grussformel: str) -> str:
-    """Plain-Text-Signatur, hierarchisch: Kanton → Direktion → Amt → Abteilung → Team."""
-    zeilen = [
-        grussformel,
-        person.vollname,
-        "",
-        "Kanton Zürich",
-        person.direktion,
-        person.amt,
-    ]
+    """Plain-Text-Signatur, hierarchisch: Träger → Direktion → Amt → Abteilung → Team.
+
+    Leere Organisations- und Kontaktfelder werden weggelassen.
+    """
+    zeilen = [grussformel, person.vollname, ""]
+    org_zeilen = [person.kanton, person.direktion, person.amt]
     if person.abteilung:
-        zeilen.append(person.abteilung)
+        org_zeilen.append(person.abteilung)
     if person.team:
-        zeilen.append(person.team)
-    zeilen += [
-        "",
-        person.vollname,
-        person.funktion,
-        person.strasse,
-        person.plz_ort,
-        f"Telefon {person.telefon}",
-        person.email,
-        person.website,
-    ]
+        org_zeilen.append(person.team)
+    zeilen += [z for z in org_zeilen if z]
+    zeilen += ["", person.vollname]
+    if person.funktion:
+        zeilen.append(person.funktion)
+    if person.strasse:
+        zeilen.append(person.strasse)
+    if person.plz_ort:
+        zeilen.append(person.plz_ort)
+    if person.telefon:
+        zeilen.append(f"Telefon {person.telefon}")
+    zeilen.append(person.email)
+    if person.website:
+        zeilen.append(person.website)
     return "\n".join(zeilen)
 
 
 def _build_html(person: KontaktPerson, grussformel: str) -> str:
-    """HTML-Signatur mit <strong> für fett darzustellende Elemente (Arial Black)."""
-    org_zeilen_html = (
-        f"Kanton Zürich<br>"
-        f"<strong>{person.direktion}</strong><br>"
-        f"{person.amt}"
-    )
-    if person.abteilung:
-        org_zeilen_html += f"<br>{person.abteilung}"
-    if person.team:
-        org_zeilen_html += f"<br>{person.team}"
+    """HTML-Signatur mit <strong> für fett darzustellende Elemente.
 
-    return (
-        f"{grussformel}<br>"
-        f"{person.vollname}<br>"
-        f"<br>"
-        f"{org_zeilen_html}<br>"
-        f"<br>"
-        f"<strong>{person.vollname}</strong><br>"
-        f"{person.funktion}<br>"
-        f"{person.strasse}<br>"
-        f"{person.plz_ort}<br>"
-        f"Telefon {person.telefon}<br>"
-        f'<a href="mailto:{person.email}">{person.email}</a><br>'
-        f'<a href="https://{person.website}">{person.website}</a>'
-    )
+    Leere Organisations- und Kontaktfelder werden weggelassen.
+    """
+    org_parts = []
+    if person.kanton:
+        org_parts.append(person.kanton)
+    if person.direktion:
+        org_parts.append(f"<strong>{person.direktion}</strong>")
+    if person.amt:
+        org_parts.append(person.amt)
+    if person.abteilung:
+        org_parts.append(person.abteilung)
+    if person.team:
+        org_parts.append(person.team)
+    org_zeilen_html = "<br>".join(org_parts)
+
+    teil = [
+        f"{grussformel}<br>",
+        f"{person.vollname}<br>",
+        "<br>",
+    ]
+    if org_zeilen_html:
+        teil.append(f"{org_zeilen_html}<br>")
+        teil.append("<br>")
+    teil.append(f"<strong>{person.vollname}</strong><br>")
+    if person.funktion:
+        teil.append(f"{person.funktion}<br>")
+    if person.strasse:
+        teil.append(f"{person.strasse}<br>")
+    if person.plz_ort:
+        teil.append(f"{person.plz_ort}<br>")
+    if person.telefon:
+        teil.append(f"Telefon {person.telefon}<br>")
+    teil.append(f'<a href="mailto:{person.email}">{person.email}</a>')
+    if person.website:
+        teil.append(f'<br><a href="https://{person.website}">{person.website}</a>')
+    return "".join(teil)
 
 
 # ---------------------------------------------------------------------------
@@ -197,6 +208,7 @@ def _build_fasi() -> KontaktPerson:
         vorname=p["vorname"],
         nachname=p["nachname"],
         funktion=p["titel"],
+        kanton=org.get("kanton", ""),
         direktion=org["direktion"],
         amt=org["amt"],
         abteilung=org.get("abteilung"),
@@ -212,12 +224,14 @@ def _build_fasi() -> KontaktPerson:
 def _build_fasi_org() -> OrgEinheit:
     """Baut FASI_ORG aus kontakte.json.
 
-    Stempel-Einheit = `stempel_einheit` aus kontakte.json (z.B. "FaSi"),
-    Amt = formales Amt (z.B. "Tiefbauamt") für Bürostempel und E-Mail-Signatur.
+    Stempel-Einheit = `stempel_einheit` aus kontakte.json,
+    Amt = formales Amt für Bürostempel und E-Mail-Signatur. Leere Felder
+    entfallen in der Ausgabe.
     """
     k = _load_kontakte()
     org = k["fasi_org"]
     return OrgEinheit(
+        kanton=org.get("kanton", ""),
         direktion=org["direktion"],
         amt=org["amt"],
         abteilung=org.get("abteilung"),

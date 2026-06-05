@@ -37,9 +37,8 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
   und Personenschaden» wie fälschlich im Glossar v2.6.2.
 - **VSS**: Akronym-Auflösung korrigiert auf «Schweizerischer Verband der Strassen- und
   Verkehrsfachleute» (nicht «Verband Schweizer Strasseninfrastruktur-Fachleute»).
-- **SECURITY.md `§ 3 IDG`** → **`§ 14 IDG`** korrigiert. § 3 IDG regelt den Vorbehalt
-  des Verfahrensrechts, nicht die Informationspflicht. § 14 IDG ist die korrekte
-  Grundlage für die Publikation dienstlicher Kontakt-Angaben öffentlicher Organe.
+- **SECURITY.md**: Datenschutz-Hinweis zu `kontakte.json` präzisiert (Grundlage
+  für die im Repo geführten Kontaktangaben).
 
 ### Hinzugefügt
 
@@ -54,7 +53,6 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 - ASTRA UAP Anhang 1 (PDF, 19 S.): [Instruktionen_Unfallaufnahmeprotokoll_UAP2018_Anhang1_Unfalltypen.pdf](https://www.astra.admin.ch/dam/astra/de/dokumente/unfalldaten/publikationen/Instruktionen_Unfallaufnahmeprotokoll_UAP2018_Anhang1_Unfalltypen.pdf.download.pdf/Instruktionen_Unfallaufnahmeprotokoll_UAP2018_Anhang1_Unfalltypen.pdf)
 - ASTRA Unfallerfassung: https://www.astra.admin.ch/astra/de/home/dokumentation/daten-informationsprodukte/unfalldaten/grundlagen/unfallerfassung.html
 - SN 641 724 / Art. 6a SVG: Webrecherche VSS / ASTRA-Normenliste
-- IDG Kanton Zürich: https://www.zh.ch/de/politik-staat/gesetze-beschluesse/gesetzessammlung/zhlex-ls/erlass-170_4-2007_02_12-2008_10_01-109.html
 
 ---
 
@@ -64,22 +62,20 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 - `footer_html(kind="webapp_login", version=...)`: Double-Escape-Problem behoben.
   Version wird jetzt einheitlich über `html.escape()` im submenu-Loop escapet —
   vorher war ungeklärt, wo der Escape stattfindet. XSS via dynamischem Version-String ausgeschlossen.
-- `SECURITY.md` um DSGVO-/IDG-Hinweis zu `kontakte.json` und CI-Publish-Gating ergänzt.
+- `SECURITY.md` um Datenschutz-Hinweis zu `kontakte.json` und CI-Publish-Gating ergänzt.
 
 ### Hinzugefügt
 - `docs/` Ordner mit `GLOSSAR.md` (≈ 40 Begriffe), `STRUKTUR.md` (Projektorganisation) und Landing-`README.md`
 - `.pre-commit-config.yaml`: Ruff + Mypy + Bandit + pytest + File-Hygiene für alle Contributor
 - `OrgEinheit.stempel_name` optionales Feld: erlaubt abweichende Stempel-Einheit vom formalen Amt
-  (für FaSi = «Fachstelle Verkehrssicherheit FaSi», während das formale Amt «Tiefbauamt» bleibt)
 - `kontakte.json` `stempel_einheit`-Key
 - 14 neue Tests: Theme-Smoke-Tests (matplotlib/plotly/altair), Footer-Varianten inkl. XSS,
-  Kontrast-Test über alle FaSi-Themes, Impressum-Hierarchie, `load_css`-Regression
+  Kontrast-Test über alle Themen-Paletten, Impressum-Hierarchie, `load_css`-Regression
 
 ### Geändert
-- `impressum.py`: hierarchisches Mapping korrigiert (amt=Tiefbauamt, abteilung=FaSi).
-  E-Mail-Signatur und Bürostempel zeigen jetzt die korrekte Kanton-Zürich-Hierarchie
-  Kanton → Direktion → Amt → Abteilung. Stempelversion nutzt `stempel_name` und bleibt
-  bei «Kanton Zürich / Baudirektion / FaSi».
+- `impressum.py`: hierarchisches Mapping korrigiert.
+  E-Mail-Signatur und Bürostempel folgen der Hierarchie
+  Träger → Direktion → Amt → Abteilung. Stempelversion nutzt `stempel_name`.
 - `tokens.json` `meta.version` synchron mit Package (2.6.2), `generated_utc` aktualisiert
 - `test_tokens_version` dynamisch gegen `__version__` (kein Hardcode, kein Drift mehr möglich)
 - `CHANGELOG.md`: ASCII-Ersatzschreibungen durch echte Umlaute ersetzt (Geändert, Hinzugefügt …)
@@ -120,7 +116,7 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 - `UNFALLSCHWERE_PALETTE` auf 5 Stufen erweitert (Sachschaden + Unbestimmt)
 - `ktz_palette` (54-Farben Sequenzpalette) in `tokens.json` als `sequential_palette`
 - `get_ampel_color()` Hilfsfunktion
-- SafetyCockpit Farbstandard-Dokumentation (`FaSi_VIZ_Farbstandard.md`)
+- SafetyCockpit Farbstandard-Dokumentation (`Farbstandard.md`)
 - Farb-Audit-Bericht als PDF
 
 ### Geändert
@@ -147,7 +143,7 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 ## [2.4.0] – 2026-03-11
 
 ### Hinzugefügt
-- `fasi_themes.py`: FaSi-eigene Farbempfehlungen für Verkehrssicherheitsthemen
+- `fasi_themes.py`: Themen-Farbempfehlungen für Verkehrssicherheitsthemen
   - `UNFALLSCHWERE_PALETTE`: Leichtverletzte / Schwerverletzte / Getötete
   - `UNFALLTYP_PALETTE`: Auffahrunfall, Abbiegeunfall, Fussgängerunfall u.a.
   - `TREND_PALETTE`: Abnahme (gut) / Zunahme (schlecht) / Stabil / Ziel
@@ -207,7 +203,7 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
   - `KontaktPerson` Dataclass mit allen Kontaktfeldern
   - `OrgEinheit` mit `as_stempelversion()` (3 Zeilen) und `as_burostempel()` (bis 5 Zeilen)
   - `build_email_signatur()`: Plain-Text oder HTML-Signatur
-  - Vordefiniert: `FASI` (Stevan Skeledžić), `FASI_ORG` (Baudirektion / TBA / FaSi)
+  - Vordefiniert: `FASI` (Stevan Skeledžić), `FASI_ORG` (Organisations-Einheit)
 - `sprache.py`: Geschlechtergerechte Sprache gemäss Bundeskanzlei-Leitfaden 3. Auflage
   - `paarform()`: «Mitarbeiterinnen und Mitarbeiter»
   - `sparschreibung()`: «Mitarbeiter/-innen» (nur für Formulare)
@@ -220,7 +216,7 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 - `TestImpressum`, `TestSprache`, `TestCDManualColors` (15 neue Tests)
 
 ### Geändert
-- `pyproject.toml` und `README.md`: URLs auf `FaSiMaster/FaSi_VIZ` korrigiert
+- `pyproject.toml` und `README.md`: URLs auf das GitHub-Repository korrigiert
 - `__init__.py`: Alle neuen Module exportiert
 
 ### Behoben
@@ -245,10 +241,10 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ---
 
-[2.6.1]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.6.0...v2.6.1
-[2.6.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.5.0...v2.6.0
-[2.5.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.4.0...v2.5.0
-[2.4.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.3.0...v2.4.0
-[2.3.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.2.0...v2.3.0
-[2.2.0]: https://github.com/FaSiMaster/FaSi_VIZ/compare/v2.1.0...v2.2.0
-[2.1.0]: https://github.com/FaSiMaster/FaSi_VIZ/releases/tag/v2.1.0
+[2.6.1]: https://github.com/FaSiMaster/roadsafety-viz/compare/v2.6.0...v2.6.1
+[2.6.0]: https://github.com/FaSiMaster/roadsafety-viz/compare/v2.5.0...v2.6.0
+[2.5.0]: https://github.com/FaSiMaster/roadsafety-viz/compare/v2.4.0...v2.5.0
+[2.4.0]: https://github.com/FaSiMaster/roadsafety-viz/compare/v2.3.0...v2.4.0
+[2.3.0]: https://github.com/FaSiMaster/roadsafety-viz/compare/v2.2.0...v2.3.0
+[2.2.0]: https://github.com/FaSiMaster/roadsafety-viz/compare/v2.1.0...v2.2.0
+[2.1.0]: https://github.com/FaSiMaster/roadsafety-viz/releases/tag/v2.1.0

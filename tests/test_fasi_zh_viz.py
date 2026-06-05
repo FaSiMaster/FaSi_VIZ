@@ -246,42 +246,39 @@ class TestImpressum:
         from fasi_zh_viz.impressum import FASI
         assert FASI.vorname == "Stevan"
         assert FASI.nachname == "Skeledžić"
-        assert FASI.email == "stevan.skeledzic@bd.zh.ch"
+        assert FASI.email == "info@skeledzic.ch"
 
     def test_email_signatur_plain(self):
         from fasi_zh_viz.impressum import build_email_signatur, FASI
         sig = build_email_signatur(FASI)
         assert "Freundliche Grüsse" in sig
         assert "Stevan Skeledžić" in sig
-        assert "Kanton Zürich" in sig
-        assert "Baudirektion" in sig
-        assert "stevan.skeledzic@bd.zh.ch" in sig
-        assert "+41 43 259 31 20" in sig
+        assert "info@skeledzic.ch" in sig
+        # Neutrale, private Signatur: keine amtliche Trägerschaft mehr.
+        assert "Baudirektion" not in sig
+        assert "Tiefbauamt" not in sig
 
     def test_email_signatur_html(self):
         from fasi_zh_viz.impressum import build_email_signatur, FASI
         sig = build_email_signatur(FASI, plain_text=False)
         assert "<strong>" in sig
-        assert "Baudirektion" in sig
+        assert "info@skeledzic.ch" in sig
 
     def test_org_einheit_stempelversion(self):
-        """Stempelversion = Kanton / Direktion / Stempel-Einheit (FaSi statt Tiefbauamt)."""
+        """Stempelversion lässt leere Träger-/Direktionsfelder weg (private Einheit)."""
         from fasi_zh_viz.impressum import FASI_ORG
         zeilen = FASI_ORG.as_stempelversion()
-        assert len(zeilen) == 3
-        assert zeilen[0] == "Kanton Zürich"
-        assert zeilen[1] == "Baudirektion"
-        assert zeilen[2] == "Fachstelle Verkehrssicherheit FaSi"
+        assert "roadsafety-viz" in zeilen
+        assert "Baudirektion" not in zeilen
+        assert "Tiefbauamt" not in zeilen
 
     def test_org_einheit_burostempel(self):
-        """Bürostempel hierarchisch: Kanton / Direktion / Amt (Tiefbauamt) / Abteilung (FaSi)."""
+        """Bürostempel: leere Träger-/Amt-Felder entfallen (private Einheit)."""
         from fasi_zh_viz.impressum import FASI_ORG
         zeilen = FASI_ORG.as_burostempel()
-        assert len(zeilen) >= 3
-        assert zeilen[0] == "Kanton Zürich"
-        assert zeilen[1] == "Baudirektion"
-        assert zeilen[2] == "Tiefbauamt"
-        assert "Fachstelle Verkehrssicherheit FaSi" in zeilen
+        assert "roadsafety-viz" in zeilen
+        assert "Baudirektion" not in zeilen
+        assert "Tiefbauamt" not in zeilen
 
     def test_org_einheit_stempel_name_optional(self):
         """Wenn `stempel_name` nicht gesetzt, wird das formale Amt verwendet."""
@@ -290,13 +287,12 @@ class TestImpressum:
         assert org.as_stempelversion() == ["Kanton Zürich", "Finanzdirektion", "Steueramt"]
 
     def test_email_signatur_plain_hierarchie(self):
-        """E-Mail-Signatur enthält Direktion/Amt/Abteilung in korrekter Reihenfolge."""
+        """E-Mail-Signatur enthält Name und neutrale Einheit in korrekter Reihenfolge."""
         from fasi_zh_viz.impressum import build_email_signatur, FASI
         sig = build_email_signatur(FASI)
-        idx_direktion = sig.index("Baudirektion")
-        idx_amt = sig.index("Tiefbauamt")
-        idx_abteilung = sig.index("Fachstelle Verkehrssicherheit FaSi")
-        assert idx_direktion < idx_amt < idx_abteilung
+        idx_einheit = sig.index("roadsafety-viz")
+        idx_email = sig.index("info@skeledzic.ch")
+        assert idx_einheit < idx_email
 
 
 class TestSprache:
@@ -559,7 +555,7 @@ class TestUIKomponenten:
         from fasi_zh_viz.ui.footer import footer_html
         html = footer_html("website")
         assert "fasi-footer" in html
-        assert "Kanton Zürich" in html
+        assert "roadsafety-viz" in html
         assert "Copyright" in html
 
     def test_footer_unbekannter_kind(self):
@@ -588,11 +584,11 @@ class TestARIAKomponenten:
         """Chip ist ein <a>-Element (implizite ARIA-Link-Rolle, keine redundante role="listitem")."""
         from fasi_zh_viz.ui.responsible import verantwortliche_stellen_html
         html_out = verantwortliche_stellen_html([
-            ("Tiefbauamt", "https://www.zh.ch/tba")
+            ("Fachstelle", "https://example.com/stelle")
         ])
         assert "class='fasi-chip'" in html_out
-        assert "href='https://www.zh.ch/tba'" in html_out
-        assert ">Tiefbauamt<" in html_out
+        assert "href='https://example.com/stelle'" in html_out
+        assert ">Fachstelle<" in html_out
 
     def test_footer_nav_aria_label(self):
         from fasi_zh_viz.ui.footer import footer_html
@@ -606,7 +602,7 @@ class TestARIAKomponenten:
 
 
 class TestFaSiThemes:
-    """Tests für FaSi-eigene Farbthemen (Verkehrssicherheit)."""
+    """Tests für die Themen-Farbpaletten (Verkehrssicherheit)."""
 
     def test_alle_themes_vorhanden(self):
         from fasi_zh_viz import list_themes

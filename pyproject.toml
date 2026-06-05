@@ -5,16 +5,16 @@ build-backend = "hatchling.build"
 [project]
 name = "fasi-zh-viz"
 version = "2.6.3"
-description = "Visualisierungs-Library gemäss Kanton Zürich Designsystem"
+description = "Private Visualisierungs-Library mit Schweizer Design-Tokens (basierend auf dem öffentlichen statistikZH/leu-Designsystem)."
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.9"
 authors = [
-    {name = "Fachstelle Verkehrssicherheit FaSi", email = "fasi@bd.zh.ch"},
+    {name = "Stevan Skeledžić", email = "info@skeledzic.ch"},
 ]
 keywords = [
     "visualization",
-    "kanton-zuerich",
+    "swiss-design",
     "design-system",
     "infographics",
     "wcag",
@@ -54,10 +54,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/FaSiMaster/FaSi_VIZ"
-Documentation = "https://github.com/FaSiMaster/FaSi_VIZ#readme"
-Repository = "https://github.com/FaSiMaster/FaSi_VIZ.git"
-Issues = "https://github.com/FaSiMaster/FaSi_VIZ/issues"
+Homepage = "https://github.com/FaSiMaster/roadsafety-viz"
+Documentation = "https://github.com/FaSiMaster/roadsafety-viz#readme"
+Repository = "https://github.com/FaSiMaster/roadsafety-viz.git"
+Issues = "https://github.com/FaSiMaster/roadsafety-viz/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/fasi_zh_viz"]

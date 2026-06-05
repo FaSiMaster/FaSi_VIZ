@@ -1,4 +1,4 @@
-# Pre-Commit-Hooks für FaSi ZH Viz
+# Pre-Commit-Hooks für roadsafety-viz
 # Installation: `pip install pre-commit && pre-commit install`
 # Manueller Lauf:  `pre-commit run --all-files`
 

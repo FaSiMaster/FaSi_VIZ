@@ -4,18 +4,18 @@ Diese Datei gibt Claude Code wichtigen Projekt-Kontext für alle Sitzungen.
 
 ## Projekt
 
-**FaSi ZH Viz** — Python-Library für Visualisierungen gemäss Kanton Zürich Designsystem.
-Entwickelt von der Fachstelle Verkehrssicherheit (FaSi), Baudirektion Kanton Zürich.
+**roadsafety-viz** — private Python-Library für Visualisierungen mit Schweizer
+Design-Tokens, basierend auf dem öffentlichen, quelloffenen Designsystem des
+Kantons Zürich (statistikZH/leu). Keine amtliche Trägerschaft.
 
-- GitHub: https://github.com/FaSiMaster/FaSi_VIZ
+- GitHub: https://github.com/FaSiMaster/roadsafety-viz
 - Aktuelle Version: siehe `pyproject.toml` und `src/fasi_zh_viz/__init__.py`
 - Tests: `pytest tests/ -v` (Ziel: alle Tests grün)
 
 ## Eigentümer
 
-**Stevan Skeledžić** — Leiter Verkehrssicherheit / SiBe ZH
-Tiefbauamt, Baudirektion, Kanton Zürich
-stevan.skeledzic@bd.zh.ch | +41 43 259 31 20
+**Stevan Skeledžić** (privates Projekt)
+info@skeledzic.ch
 
 ## Architektur
 
@@ -27,9 +27,9 @@ src/fasi_zh_viz/
 ├── tokens.py               ← Token-Loader
 ├── text_format.py          ← Schweizer Textformatierung
 ├── annotations.py          ← Quellenzeilen, Alt-Texte, Bildunterschriften
-├── impressum.py            ← E-Mail-Signatur, Org-Stempel (CD Manual S.23)
+├── impressum.py            ← E-Mail-Signatur, Org-Stempel (leere Felder entfallen)
 ├── sprache.py              ← Geschlechtergerechte Sprache (BK-Leitfaden)
-├── fasi_themes.py          ← FaSi-eigene Farbthemen (Verkehrssicherheit)
+├── fasi_themes.py          ← Themen-Farbpaletten (Verkehrssicherheit)
 ├── matplotlib_style.py     ← Matplotlib rcParams
 ├── plotly_theme.py         ← Plotly Template
 ├── altair_theme.py         ← Altair Theme

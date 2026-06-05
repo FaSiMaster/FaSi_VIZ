@@ -4,17 +4,17 @@
     "vorname": "Vorname",
     "nachname": "Nachname",
     "titel": "Funktion / Titel",
-    "email": "vorname.nachname@bd.zh.ch",
-    "telefon": "+41 43 259 XX XX",
-    "website": "www.zh.ch/ihre-seite"
+    "email": "vorname.nachname@example.com",
+    "telefon": "",
+    "website": "example.com"
   },
   "fasi_org": {
-    "kanton": "Kanton Zürich",
-    "direktion": "Baudirektion",
-    "amt": "Tiefbauamt",
-    "abteilung": "Fachstelle Verkehrssicherheit FaSi",
-    "stempel_einheit": "Fachstelle Verkehrssicherheit FaSi",
-    "adresse": "Walcheplatz 2",
-    "plz_ort": "8090 Zürich"
+    "kanton": "",
+    "direktion": "",
+    "amt": "",
+    "abteilung": "Ihre Einheit",
+    "stempel_einheit": "Ihre Einheit",
+    "adresse": "",
+    "plz_ort": ""
   }
 }

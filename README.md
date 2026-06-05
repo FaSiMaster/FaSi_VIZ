@@ -1,25 +1,25 @@
-# FaSi ZH Viz
+# roadsafety-viz
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://github.com/FaSiMaster/FaSi_VIZ/actions/workflows/ci.yml/badge.svg)](https://github.com/FaSiMaster/FaSi_VIZ/actions)
-[![Tests](https://img.shields.io/badge/tests-90%20passed-brightgreen)](https://github.com/FaSiMaster/FaSi_VIZ/actions)
+[![CI](https://github.com/FaSiMaster/roadsafety-viz/actions/workflows/ci.yml/badge.svg)](https://github.com/FaSiMaster/roadsafety-viz/actions)
+[![Tests](https://img.shields.io/badge/tests-90%20passed-brightgreen)](https://github.com/FaSiMaster/roadsafety-viz/actions)
 
-**Visualisierungs-Library gemäss Kanton Zürich Designsystem**
+**Private Visualisierungs-Library mit Schweizer Design-Tokens**
 
-Entwickelt von der [Fachstelle Verkehrssicherheit FaSi](https://www.zh.ch/de/direktion-der-justiz-und-des-innern/strassenverkehrsamt.html), Tiefbauamt, Baudirektion Kanton Zürich.
+Privates Projekt von Stevan Skeledžić. Basiert auf dem öffentlichen, quelloffenen Designsystem des Kantons Zürich (statistikZH/leu). Keine amtliche Trägerschaft.
 
 ## Installation
 
 ```bash
-pip install git+https://github.com/FaSiMaster/FaSi_VIZ.git
+pip install git+https://github.com/FaSiMaster/roadsafety-viz.git
 ```
 
 Oder lokal (editierbar):
 
 ```bash
-git clone https://github.com/FaSiMaster/FaSi_VIZ.git
-cd FaSi_VIZ
+git clone https://github.com/FaSiMaster/roadsafety-viz.git
+cd roadsafety-viz
 pip install -e ".[dev]"
 ```
 
@@ -134,7 +134,7 @@ result = lint_geschlechtergerecht("Die Mitarbeiter*innen sind eingeladen.")
 # → {"ok": False, "issues": [{"level": "error", ...}]}
 
 from fasi_zh_viz import FASI, build_email_signatur
-sig = build_email_signatur(FASI)  # Offizielle E-Mail-Signatur gemäss CD Manual S.23
+sig = build_email_signatur(FASI)  # Strukturierte E-Mail-Signatur (leere Felder entfallen)
 ```
 
 ### Themes & UI
@@ -185,7 +185,7 @@ html = verantwortliche_stellen_html([
 | [KZH Designsystem – Typografie](https://www.zh.ch/de/webangebote-entwickeln-und-gestalten/inhalt/designsystem/design-grundlagen/typografie.html) | Web-Schriften |
 | [KZH Designsystem – Infografiken](https://www.zh.ch/de/webangebote-entwickeln-und-gestalten/inhalt/designsystem/design-grundlagen/infografiken-und-visualisierungen.html) | Infografik-Regeln |
 | [KZH Barrierefreiheit](https://www.zh.ch/de/webangebote-entwickeln-und-gestalten/inhalt/barrierefreiheit/vorgaben-zur-barrierefreiheit/barrierefreiheit-von-infografiken-und-visualisierungen.html) | WCAG-Vorgaben |
-| Kanton Zürich CD Manual 2025 | Print-CD, E-Mail-Signatur S.23, Office-Typografie S.40–47 |
+| Corporate Design Manual des Kantons Zürich 2025 (öffentlich) | Print-CD, Office-Typografie S.40–47 |
 | [BK-Leitfaden Geschlechtergerechte Sprache](https://www.bk.admin.ch/dam/bk/de/dokumente/sprachdienste/leitfaden-geschlechtergerechte-sprache.pdf) | Sprachregeln, 3. Auflage |
 | [WCAG 2.1 (W3C)](https://www.w3.org/TR/WCAG21/) | Kontrastschwellen |
 | ASTRA Unfalltypenklassierung | Grundlage für `fasi_themes.py` |
@@ -194,8 +194,8 @@ html = verantwortliche_stellen_html([
 
 ```bash
 # Repo klonen und Umgebung einrichten
-git clone https://github.com/FaSiMaster/FaSi_VIZ.git
-cd FaSi_VIZ
+git clone https://github.com/FaSiMaster/roadsafety-viz.git
+cd roadsafety-viz
 pip install -e ".[dev]"
 
 # Tests
@@ -218,6 +218,5 @@ MIT License — siehe [LICENSE](LICENSE)
 
 ## Kontakt
 
-Fachstelle Verkehrssicherheit FaSi
-Tiefbauamt, Baudirektion Kanton Zürich
-stevan.skeledzic@bd.zh.ch
+Stevan Skeledžić (privates Projekt)
+info@skeledzic.ch

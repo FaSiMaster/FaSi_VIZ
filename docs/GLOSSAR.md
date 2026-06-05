@@ -1,4 +1,4 @@
-# Glossar — FaSi ZH Viz
+# Glossar — roadsafety-viz
 
 Begriffsklärungen für die Library und das zugrundeliegende Designsystem.
 
@@ -60,11 +60,7 @@ Textalternative für Bilder/Grafiken. Im Library-Standard ≤ 150 Zeichen.
 
 ---
 
-## Verkehrssicherheit (FaSi)
-
-### FaSi
-Fachstelle Verkehrssicherheit, Tiefbauamt, Baudirektion Kanton Zürich.
-Verantwortlich für strategisches Verkehrssicherheits-Monitoring im Kanton.
+## Verkehrssicherheit
 
 ### Unfallschwere
 Klassifikation nach Schwere des Personenschadens gemäss ASTRA-Standard:
@@ -100,12 +96,12 @@ Strassenverkehr).
 
 ### Ampel-Palette (Quartil-Ampel)
 Quartil-basiertes Monitoring-Schema: Grün (unter Q25), Gelb (Q25–Q75),
-Rot (über Q75), Grau (keine Daten). Nicht Teil des CD-Manuals, sondern
-FaSi-Eigenstandard (SafetyCockpit).
+Rot (über Q75), Grau (keine Daten). Nicht Teil des öffentlichen CD-Manuals,
+sondern projekteigener Standard (SafetyCockpit).
 
 ### SafetyCockpit
-R-Shiny-Anwendung der FaSi zur Auswertung netzweiter Verkehrssicherheits-
-Kennzahlen. Seit v2.6.1 aus dem Repo ausgelagert nach `_archiv/`.
+R-Shiny-Anwendung zur Auswertung netzweiter Verkehrssicherheits-Kennzahlen.
+Seit v2.6.1 aus dem Repo ausgelagert nach `_archiv/`.
 
 ---
 
@@ -147,8 +143,9 @@ Bis zu 5-zeilige Absender-Signatur: *Kanton Zürich / Direktion / Amt /
 Abteilung / Team*. Quelle: CD Manual S. 14-15.
 
 ### E-Mail-Signatur
-Offizielle Signatur gemäss CD Manual S. 23. Schrift Arial Regular/Black 10 pt.
-Direktion und Name fett (Arial Black). In `impressum.py`.
+Strukturierte Signatur (Direktion und Name fett). Leere Organisationsfelder
+entfallen, sodass das Modul auch für private Absender nutzbar ist. In
+`impressum.py`.
 
 ---
 
